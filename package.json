@@ -1,0 +1,56 @@
+{
+  "name": "jcc_exchange",
+  "version": "1.0.0",
+  "description": "api of jcc exchange",
+  "main": "lib/index.js",
+  "files": [
+    "lib"
+  ],
+  "dependencies": {
+    "jcc_rpc": "0.0.2",
+    "jingtum-lib": "^1.4.1"
+  },
+  "devDependencies": {
+    "ajv": "^6.5.3",
+    "axios-mock-adapter": "^1.15.0",
+    "babel-cli": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-eslint": "^8.2.6",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.7.0",
+    "chai": "^4.1.2",
+    "coveralls": "^3.0.2",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.14.0",
+    "eslint-plugin-node": "^7.0.1",
+    "eslint-plugin-promise": "^4.0.0",
+    "eslint-plugin-standard": "^3.1.0",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^7.0.1",
+    "gulp-eslint": "^5.0.0",
+    "gulp-istanbul": "^1.1.3",
+    "gulp-mocha": "^3.0.1",
+    "gulp-util": "^3.0.8",
+    "isparta": "^4.1.0",
+    "jsdom": "^12.0.0",
+    "mocha": "^5.2.0"
+  },
+  "scripts": {
+    "test": "gulp",
+    "coveralls": "cat coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/JCCDex/jcc_exchange.git"
+  },
+  "keywords": [
+    "jcc",
+    "exchange"
+  ],
+  "author": "JCCDex",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/JCCDex/jcc_exchange/issues"
+  },
+  "homepage": "https://github.com/JCCDex/jcc_exchange#readme"
+}
