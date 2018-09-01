@@ -42,7 +42,7 @@ Parameters
 ```javascript
 const cancelOrder = require('jcc_exchange').cancelOrder
 // import { cancelOrder } from 'jcc_exchange';
-createOrder(cancelOrder).then(() => {}).catch(error => {})
+createOrder(obj).then(() => {}).catch(error => {})
 ```
 
 Parameters
