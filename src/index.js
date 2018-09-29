@@ -151,7 +151,7 @@ const transferAccount = ({
         }
         res = await inst.transferAccount(sign);
         if (res.result) {
-            return resolve();
+            return resolve(res.data.hash);
         }
         return reject(new Error(res.msg));
     })

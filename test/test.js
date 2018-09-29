@@ -402,7 +402,10 @@ describe('test jc exchange', function () {
                 }
             })
             mock.onPost('/exchange/sign_payment').reply(200, {
-                code: '0'
+                code: '0',
+                data: {
+                    hash: '111111'
+                }
             });
 
             jcExchange.transferAccount(testData).then(res => {
