@@ -25,7 +25,7 @@ SOFTWARE.
  * @author https://github.com/GinMu
  */
 
-const jingtumSignTx = require('jingtum-lib/src/local_sign');
+const jingtumSignTx = require('jcc_jingtum_lib/src/local_sign');
 const JcExchange = require('jcc_rpc').JcExchange;
 const {
     formatCreate,

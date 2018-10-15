@@ -7,8 +7,8 @@
     "lib"
   ],
   "dependencies": {
-    "jcc_rpc": "0.0.2",
-    "jingtum-lib": "^1.4.1"
+    "jcc_jingtum_lib": "^1.4.4",
+    "jcc_rpc": "0.0.2"
   },
   "devDependencies": {
     "ajv": "^6.5.3",
