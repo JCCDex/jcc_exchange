@@ -5,6 +5,19 @@
 [![Coverage Status](https://coveralls.io/repos/github/JCCDex/jcc_exchange/badge.svg?branch=master)](https://coveralls.io/github/JCCDex/jcc_exchange?branch=master)
 [![npm downloads](https://img.shields.io/npm/dm/jcc_exchange.svg)](http://npm-stat.com/charts.html?package=jcc_exchange)
 
+## preface
+
+[jcc_exchange](https://github.com/JCCDex/jcc_exchange) 可以提交订单和转账两种交易，而且都是在本地签名后发送到井通节点，同样支持所有的井通联盟链。
+
+[jcc_exchange](https://github.com/JCCDex/jcc_exchange) is toolkit for submit order/payment transaction to Jingtum node after local signature, which also support all jingtum allinace chains.
+
+* 支持浏览器 Support running in browsers 
+* 支持所有的井通联盟链 Support all jingtum alliance chains
+
+井畅应用交流群: 557524730
+
+JCCDex Tech support QQ group ID: 557524730
+
 ## Installtion
 
 ```shell
