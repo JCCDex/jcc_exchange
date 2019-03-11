@@ -73,7 +73,7 @@ const createOrder = ({
 
         res = await inst.createOrder(sign);
         if (res.result) {
-            return resolve();
+            return resolve(res.data.hash);
         }
         return reject(new Error(res.msg));
     })
@@ -110,7 +110,7 @@ const cancelOrder = ({
         }
         res = await inst.deleteOrder(sign);
         if (res.result) {
-            return resolve();
+            return resolve(res.data.hash);
         }
         return reject(new Error(res.msg));
     })

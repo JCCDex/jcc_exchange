@@ -167,11 +167,14 @@ describe('test jc exchange', function () {
                 }
             })
             mock.onPost('/exchange/sign_order').reply(200, {
-                code: '0'
+                code: '0',
+                data: {
+                    hash: "111"
+                }
             });
 
-            jcExchange.createOrder(testData).then(res => {
-                expect(true)
+            jcExchange.createOrder(testData).then(hash => {
+                expect(hash).to.equal("111")
                 done()
             })
         })
@@ -300,11 +303,14 @@ describe('test jc exchange', function () {
                 }
             })
             mock.onDelete('/exchange/sign_cancel_order').reply(200, {
-                code: '0'
+                code: '0',
+                data: {
+                    hash: "1111"
+                }
             });
 
-            jcExchange.cancelOrder(testData).then(res => {
-                expect(true)
+            jcExchange.cancelOrder(testData).then(hash => {
+                expect(hash).to.equal("1111")
                 done()
             })
         })
