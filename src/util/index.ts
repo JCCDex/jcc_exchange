@@ -2,7 +2,7 @@
 import assert = require("assert");
 import { JcExchange } from "jcc_rpc";
 
-export const exchangeInstance = () => {
+export const exchangeInstance = (() => {
     let inst: JcExchange = null;
 
     /**
@@ -43,4 +43,4 @@ export const exchangeInstance = () => {
         destroy,
         init
     };
-};
+})();

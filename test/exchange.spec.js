@@ -7,6 +7,7 @@ const sinon = require("sinon");
 const sandbox = sinon.createSandbox();
 const mock = new MockAdapter(fetch);
 const JcExchange = require("jcc_rpc").JcExchange;
+const exchangeInstance = require("../lib/util").exchangeInstance;
 const testAddress = 'jpgWGpfHz8GxqUjz5nb6ej8eZJQtiF6KhH';
 const testSecret = 'snfXQMEVbbZng84CcfdKDASFRi4Hf';
 const testIssuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or";
@@ -36,7 +37,7 @@ describe('test jc exchange', function() {
     });
 
     it("destroy should be called once", function() {
-      const spy = sandbox.spy(JCCExchange.exchangeInstanceAPI, "destroy");
+      const spy = sandbox.spy(exchangeInstance, "destroy");
       JCCExchange.destroy();
       expect(spy.calledOnce).to.true;
       sandbox.restore();

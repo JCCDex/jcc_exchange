@@ -31,8 +31,6 @@ import { exchangeInstance } from "./util";
 
 class JCCExchange {
 
-    private static exchangeInstanceAPI = exchangeInstance();
-
     private static hosts: string[];
     private static port: number;
     private static https: boolean;
@@ -59,7 +57,7 @@ class JCCExchange {
      * @memberof JCCExchange
      */
     public static destroy() {
-        JCCExchange.exchangeInstanceAPI.destroy();
+        exchangeInstance.destroy();
     }
 
     /**
@@ -81,16 +79,13 @@ class JCCExchange {
         return new Promise(async (resolve, reject) => {
             try {
                 const tx = serializeCreateOrder(address, amount, base, counter, sum, type, issuer);
-                const inst = JCCExchange.exchangeInstanceAPI.init(JCCExchange.hosts, JCCExchange.port, JCCExchange.https);
+                const inst = exchangeInstance.init(JCCExchange.hosts, JCCExchange.port, JCCExchange.https);
                 let res = await inst.getSequence(address);
                 if (!res.result) {
                     return reject(new Error(res.msg));
                 }
-                const w = {
-                    seed: secret
-                };
                 tx.Sequence = res.data.sequence;
-                const sign = jingtumSignTx(tx, w);
+                const sign = jingtumSignTx(tx, { seed: secret });
                 res = await inst.createOrder(sign);
                 if (res.result) {
                     return resolve(res.data.hash);
@@ -116,16 +111,13 @@ class JCCExchange {
         return new Promise(async (resolve, reject) => {
             try {
                 const tx = serializeCancelOrder(address, offerSequence);
-                const inst = JCCExchange.exchangeInstanceAPI.init(JCCExchange.hosts, JCCExchange.port, JCCExchange.https);
+                const inst = exchangeInstance.init(JCCExchange.hosts, JCCExchange.port, JCCExchange.https);
                 let res = await inst.getSequence(address);
                 if (!res.result) {
                     return reject(new Error(res.msg));
                 }
-                const w = {
-                    seed: secret
-                };
                 tx.Sequence = res.data.sequence;
-                const sign = jingtumSignTx(tx, w);
+                const sign = jingtumSignTx(tx, { seed: secret });
                 res = await inst.deleteOrder(sign);
                 if (res.result) {
                     return resolve(res.data.hash);
@@ -155,16 +147,13 @@ class JCCExchange {
         return new Promise(async (resolve, reject) => {
             try {
                 const tx = serializePayment(address, amount, to, token, memo, issuer);
-                const inst = JCCExchange.exchangeInstanceAPI.init(JCCExchange.hosts, JCCExchange.port, JCCExchange.https);
+                const inst = exchangeInstance.init(JCCExchange.hosts, JCCExchange.port, JCCExchange.https);
                 let res = await inst.getSequence(address);
                 if (!res.result) {
                     return reject(new Error(res.msg));
                 }
-                const w = {
-                    seed: secret
-                };
                 tx.Sequence = res.data.sequence;
-                const sign = jingtumSignTx(tx, w);
+                const sign = jingtumSignTx(tx, { seed: secret });
                 res = await inst.transferAccount(sign);
                 if (res.result) {
                     return resolve(res.data.hash);
