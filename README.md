@@ -23,70 +23,63 @@ JCCDex Tech support QQ group ID: 557524730
 npm install jcc_exchange
 ```
 
-## API
+## Usage
 
-### createOrder
-
-```javascript
-const createOrder = require('jcc_exchange').createOrder
-// import { createOrder } from 'jcc_exchange';
-createOrder(obj).then(() => {}).catch(error => {})
-```
-
-Parameters
-
-`obj`- `object`
-
-* `counter`- `string`
-* `base`- `string`
-* `issuer`- `string`
-* `address`- `string`
-* `type`- `number` -> `0: buy, 1: sell`
-* `amount`- `string | number`
-* `sum`- `string | number`
-* `secret`- `string`
-* `hosts`- `array`
-* `port`- `number`
-* `https`- `boolean`
-
-### cancelOrder
+Breaking changes since v2.0.0, if you used v1.0.9 see [v1.0.9](https://github.com/JCCDex/jcc_exchange/blob/master/docs/v1.0.9.md).
 
 ```javascript
-const cancelOrder = require('jcc_exchange').cancelOrder
-// import { cancelOrder } from 'jcc_exchange';
-cancelOrder(obj).then(() => {}).catch(error => {})
+import JCCExchange from "jcc_exchange";
+
+// example
+const hosts = ["localhost"];
+const port = 80;
+const https = false;
+
+// init value of hosts、port & https
+JCCExchange.init(hosts, port, https);
+
+// create an order
+// buy 1 jcc with 1 swt
+const address = "";
+const secret = "";
+const amount = "1";
+const base = "jjcc";
+const counter = "swt";
+const sum = "1";
+const type = "buy"; // if sell 1 jjcc with 1 swt, the value of type is "sell"
+const issuer; // the default value is "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
+try {
+    const hash = await JCCExchange.createOrder(address, secret, amount, base, counter, sum, type, issuer);
+    console.log(hash);
+} catch (error) {
+    console.log(error);
+}
+
+// cancel an order
+const address = "";
+const secret = "";
+const orderSequence = 0;
+try {
+    const hash = await JCCExchange.cancelOrder(address, secret, orderSequence);
+    console.log(hash);
+} catch (error) {
+    console.log(error);
+}
+
+// transfer token
+// transfer 1 jjcc to "jKTtq57iqHoHg3cP7Rryzug9Q2puLX1kHh" from "jpgWGpfHz8GxqUjz5nb6ej8eZJQtiF6KhH"
+const address = "jpgWGpfHz8GxqUjz5nb6ej8eZJQtiF6KhH";
+const secret = "";
+const amount = "1";
+const memo = "test";
+const to = "jKTtq57iqHoHg3cP7Rryzug9Q2puLX1kHh";
+const token = "jjcc";
+const issuer; // the default value is "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
+try {
+    const hash = await JCCExchange.transfer(address, secret, amount, memo, to, token, issuer);
+    console.log(hash);
+} catch (error) {
+    console.log(error);
+}
+
 ```
-
-Parameters
-
-`obj`- `object`
-
-* `address`- `string`
-* `offerSequence`- `number`
-* `secret`- `string`
-* `hosts`- `array`
-* `port`- `number`
-* `https`- `boolean`
-
-### transferAccount
-
-```javascript
-const transferAccount = require('jcc_exchange').transferAccount
-// import { transferAccount } from 'jcc_exchange';
-transferAccount(obj).then(() => {}).catch(error => {})
-```
-
-Parameters
-
-`obj`- `object`
-
-* `currency`- `string`
-* `amount`- `string`
-* `address`- `string`
-* `secret`- `string`
-* `to`- `string`
-* `issuer`- `string`
-* `memo`- `string`
-* `hosts`- `array`
-* `port`- `number`
-* `https`- `boolean`

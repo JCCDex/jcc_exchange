@@ -138,7 +138,7 @@ class JCCExchange {
      * @param {string} amount transfer amount
      * @param {(string | IMemo[])} memo transfer memo
      * @param {string} to destination address of jingtum wallet
-     * @param {string} token transfer token
+     * @param {string} token token name of transfer
      * @param {string} [issuer="jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"] issuer address of token, the default address is "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
      * @returns {Promise<string>} resolve hash if transfer success
      * @memberof JCCExchange
