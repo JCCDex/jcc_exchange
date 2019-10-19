@@ -47,9 +47,10 @@ const base = "jjcc";
 const counter = "swt";
 const sum = "1";
 const type = "buy"; // if sell 1 jjcc with 1 swt, the value of type is "sell"
+const platform = ""; // swtc address for service charge
 const issuer; // the default value is "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
 try {
-    const hash = await JCCExchange.createOrder(address, secret, amount, base, counter, sum, type, issuer);
+    const hash = await JCCExchange.createOrder(address, secret, amount, base, counter, sum, type, platform, issuer);
     console.log(hash);
 } catch (error) {
     console.log(error);
