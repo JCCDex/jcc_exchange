@@ -1,7 +1,7 @@
 
 import { ExchangeType, IAmount, ICancelExchange, ICreateExchange, IMemo, IPayExchange } from "../model";
 
-export const serializeCreateOrder = (address: string, amount: string, base: string, counter: string, sum: string, type: ExchangeType, issuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"): ICreateExchange => {
+export const serializeCreateOrder = (address: string, amount: string, base: string, counter: string, sum: string, type: ExchangeType, platform: string, issuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"): ICreateExchange => {
     const account = address;
     const fee = 10 / 1000000;
     let takerGets;
@@ -57,6 +57,7 @@ export const serializeCreateOrder = (address: string, amount: string, base: stri
         Account: account,
         Fee: fee,
         Flags: flags,
+        Platform: platform || "jDXCeSHSpZ9LiX6ihckWaYDeDt5hFrdTto",
         TakerGets: takerGets,
         TakerPays: takerPays,
         TransactionType: "OfferCreate"

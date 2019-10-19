@@ -71,14 +71,15 @@ class JCCExchange {
      * @param {string} counter token name, if the transaction pair is jjcc-swt, the value of counter is "swt"
      * @param {string} sum the value is the amount multiplied by price
      * @param {ExchangeType} type the value is "buy" or "sell"
+     * @param {string} platform platform address
      * @param {string} [issuer="jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"] issuer address of token, the default address is "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
      * @returns {Promise<string>} resolve hash if create success
      * @memberof JCCExchange
      */
-    public static createOrder(address: string, secret: string, amount: string, base: string, counter: string, sum: string, type: ExchangeType, issuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"): Promise<string> {
+    public static createOrder(address: string, secret: string, amount: string, base: string, counter: string, sum: string, type: ExchangeType, platform: string, issuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"): Promise<string> {
         return new Promise(async (resolve, reject) => {
             try {
-                const tx = serializeCreateOrder(address, amount, base, counter, sum, type, issuer);
+                const tx = serializeCreateOrder(address, amount, base, counter, sum, type, platform, issuer);
                 const inst = exchangeInstance.init(JCCExchange.hosts, JCCExchange.port, JCCExchange.https);
                 let res = await inst.getSequence(address);
                 if (!res.result) {

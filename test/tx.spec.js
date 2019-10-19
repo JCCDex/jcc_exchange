@@ -8,7 +8,7 @@ describe('test tx', function() {
   describe('test serializeCreateOrder', function() {
 
     it('use cny to buy swt', function() {
-      const tx = serializeCreateOrder(testAddress, '1', 'swt', 'cny', '0.03', 'buy', issuer);
+      const tx = serializeCreateOrder(testAddress, '1', 'swt', 'cny', '0.03', 'buy', undefined, issuer);
       expect(tx).to.deep.equal({
         Flags: 0,
         Fee: 0.00001,
@@ -19,12 +19,13 @@ describe('test tx', function() {
           currency: 'CNY',
           issuer: 'jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or'
         },
-        TakerPays: '1'
+        TakerPays: '1',
+        Platform: "jDXCeSHSpZ9LiX6ihckWaYDeDt5hFrdTto"
       });
     })
 
     it('use swt to buy jjcc', function() {
-      const tx = serializeCreateOrder(testAddress, '1', 'jjcc', 'swt', '0.5', 'buy');
+      const tx = serializeCreateOrder(testAddress, '1', 'jjcc', 'swt', '0.5', 'buy', testAddress);
       expect(tx).to.deep.equal({
         Flags: 0,
         Fee: 0.00001,
@@ -35,12 +36,13 @@ describe('test tx', function() {
           value: '1',
           currency: 'JJCC',
           issuer: 'jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or'
-        }
+        },
+        Platform: testAddress
       });
     })
 
     it('sell swt to get cny', function() {
-      const tx = serializeCreateOrder(testAddress, '1', 'swt', 'cny', '0.03', 'sell', issuer);
+      const tx = serializeCreateOrder(testAddress, '1', 'swt', 'cny', '0.03', 'sell', null, issuer);
       expect(tx).to.deep.equal({
         Flags: 524288,
         Fee: 0.00001,
@@ -51,7 +53,8 @@ describe('test tx', function() {
           value: '0.03',
           currency: 'CNY',
           issuer: 'jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or'
-        }
+        },
+        Platform: "jDXCeSHSpZ9LiX6ihckWaYDeDt5hFrdTto"
       });
     })
 
@@ -67,7 +70,8 @@ describe('test tx', function() {
           currency: 'JJCC',
           issuer: 'jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or'
         },
-        TakerPays: '0.4'
+        TakerPays: '0.4',
+        Platform: "jDXCeSHSpZ9LiX6ihckWaYDeDt5hFrdTto"
       });
     })
 
