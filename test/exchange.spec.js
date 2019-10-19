@@ -78,7 +78,7 @@ describe('test jc exchange', function() {
     })
 
     it('if the type is wrong', function(done) {
-      JCCExchange.createOrder(testAddress, testSecret, "1", "jjcc", "cny", "1", "", testIssuer).catch(error => {
+      JCCExchange.createOrder(testAddress, testSecret, "1", "jjcc", "cny", "1", "", "", testIssuer).catch(error => {
         expect(error.message).to.equal("The type of creating order should be one of 'buy' and 'sell'");
         done()
       })
