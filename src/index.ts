@@ -27,7 +27,7 @@
 import * as jingtumSignTx from "jcc_jingtum_lib/src/local_sign";
 import { ExchangeType, IMemo } from "./model";
 import { serializeCancelOrder, serializeCreateOrder, serializePayment } from "./tx";
-import { exchangeInstance } from "./util";
+import { exchangeInstance, swtcSequence } from "./util";
 
 class JCCExchange {
 
@@ -60,6 +60,15 @@ class JCCExchange {
         exchangeInstance.destroy();
     }
 
+    public static async getSequence(address): Promise<number> {
+        const inst = exchangeInstance.init(JCCExchange.hosts, JCCExchange.port, JCCExchange.https);
+        const res = await inst.getSequence(address);
+        if (!res.result) {
+            throw new Error(res.msg);
+        }
+        return res.data.sequence;
+    }
+
     /**
      * create order
      *
@@ -81,18 +90,17 @@ class JCCExchange {
             try {
                 const tx = serializeCreateOrder(address, amount, base, counter, sum, type, platform, issuer);
                 const inst = exchangeInstance.init(JCCExchange.hosts, JCCExchange.port, JCCExchange.https);
-                let res = await inst.getSequence(address);
-                if (!res.result) {
-                    return reject(new Error(res.msg));
-                }
-                tx.Sequence = res.data.sequence;
+                const sequence = await swtcSequence.get(JCCExchange.getSequence, address);
+                tx.Sequence = sequence;
                 const sign = jingtumSignTx(tx, { seed: secret });
-                res = await inst.createOrder(sign);
-                if (res.result) {
-                    return resolve(res.data.hash);
+                const res = await inst.createOrder(sign);
+                if (!res.result) {
+                    throw new Error(res.msg);
                 }
-                return reject(new Error(res.msg));
+                swtcSequence.rise();
+                return resolve(res.data.hash);
             } catch (error) {
+                swtcSequence.reset();
                 return reject(error);
             }
         });
@@ -113,18 +121,17 @@ class JCCExchange {
             try {
                 const tx = serializeCancelOrder(address, offerSequence);
                 const inst = exchangeInstance.init(JCCExchange.hosts, JCCExchange.port, JCCExchange.https);
-                let res = await inst.getSequence(address);
-                if (!res.result) {
-                    return reject(new Error(res.msg));
-                }
-                tx.Sequence = res.data.sequence;
+                const sequence = await swtcSequence.get(JCCExchange.getSequence, address);
+                tx.Sequence = sequence;
                 const sign = jingtumSignTx(tx, { seed: secret });
-                res = await inst.deleteOrder(sign);
-                if (res.result) {
-                    return resolve(res.data.hash);
+                const res = await inst.deleteOrder(sign);
+                if (!res.result) {
+                    throw new Error(res.msg);
                 }
-                return reject(new Error(res.msg));
+                swtcSequence.rise();
+                return resolve(res.data.hash);
             } catch (error) {
+                swtcSequence.reset();
                 return reject(error);
             }
         });
@@ -149,18 +156,17 @@ class JCCExchange {
             try {
                 const tx = serializePayment(address, amount, to, token, memo, issuer);
                 const inst = exchangeInstance.init(JCCExchange.hosts, JCCExchange.port, JCCExchange.https);
-                let res = await inst.getSequence(address);
-                if (!res.result) {
-                    return reject(new Error(res.msg));
-                }
-                tx.Sequence = res.data.sequence;
+                const sequence = await swtcSequence.get(JCCExchange.getSequence, address);
+                tx.Sequence = sequence;
                 const sign = jingtumSignTx(tx, { seed: secret });
-                res = await inst.transferAccount(sign);
-                if (res.result) {
-                    return resolve(res.data.hash);
+                const res = await inst.transferAccount(sign);
+                if (!res.result) {
+                    throw new Error(res.msg);
                 }
-                return reject(new Error(res.msg));
+                swtcSequence.rise();
+                return resolve(res.data.hash);
             } catch (error) {
+                swtcSequence.reset();
                 return reject(error);
             }
         });

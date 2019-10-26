@@ -11,6 +11,7 @@ const exchangeInstance = require("../lib/util").exchangeInstance;
 const testAddress = 'jpgWGpfHz8GxqUjz5nb6ej8eZJQtiF6KhH';
 const testSecret = 'snfXQMEVbbZng84CcfdKDASFRi4Hf';
 const testIssuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or";
+const swtcSequence = require("../lib/util").swtcSequence;
 
 describe('test jc exchange', function() {
 
@@ -68,11 +69,13 @@ describe('test jc exchange', function() {
         date: new Date()
       });
 
-      JCCExchange.createOrder(testAddress, testSecret, "1", "jjcc", "cny", "1", "buy").then(hash => {
+      JCCExchange.createOrder(testAddress, testSecret, "1", "jjcc", "cny", "1", "buy").then(async hash => {
         expect(hash).to.equal("111");
         expect(spy.calledOnceWith(testAddress)).to.true;
         expect(spy1.calledOnceWith("120007220000000024000000C864D4838D7EA4C6800000000000000000000000004A4A43430000000000A582E432BFC48EEDEF852C814EC57F3CD2D4159665D4838D7EA4C68000000000000000000000000000434E590000000000A582E432BFC48EEDEF852C814EC57F3CD2D4159668400000000000000A732102C13075B18C87A032226CE383AEFD748D7BB719E02CD7F5A8C1F2C7562DE7C12A7446304402204BAE7257177ECB10E43FBD06C8158F1AC2290A44081B796C9BD47725536A9B9902200D9D86C1479F482D207BF9CEAC66FD9D7BE9498110A566EC69A713AAB0D3E95281141270C5BE503A3A22B506457C0FEC97633B44F7DD8D14896E3F7353697ECE52645D9C502F08BB2EDC5717")).to.true;
         sandbox.restore();
+        expect(await swtcSequence.get()).to.equal(201);
+        swtcSequence.reset();
         done()
       })
     })
@@ -157,11 +160,13 @@ describe('test jc exchange', function() {
       const spy = sandbox.spy(JcExchange.prototype, "getSequence");
       const spy1 = sandbox.spy(JcExchange.prototype, "deleteOrder");
 
-      JCCExchange.cancelOrder(testAddress, testSecret, 200).then(hash => {
+      JCCExchange.cancelOrder(testAddress, testSecret, 200).then(async hash => {
         expect(hash).to.equal("1111");
         expect(spy.calledOnceWith(testAddress)).to.true;
         expect(spy1.calledOnceWith("120008220000000024000000C82019000000C868400000000000000A732102C13075B18C87A032226CE383AEFD748D7BB719E02CD7F5A8C1F2C7562DE7C12A74473045022100C13F2C789E428CC41DC0579471EB826A1089A13DE9B85293D1879718AA03BAF102203E1A013FBEFD8F497DE5AB5890EBEA3E013BD71B38852D9B2A552EC2F3971CB781141270C5BE503A3A22B506457C0FEC97633B44F7DD")).to.true;
         sandbox.restore();
+        expect(await swtcSequence.get()).to.equal(201);
+        swtcSequence.reset();
         done()
       })
     })
@@ -239,11 +244,13 @@ describe('test jc exchange', function() {
       });
       const spy = sandbox.spy(JcExchange.prototype, "getSequence");
       const spy1 = sandbox.spy(JcExchange.prototype, "transferAccount");
-      JCCExchange.transfer(testAddress, testSecret, "1", "test", to, "swt").then(res => {
+      JCCExchange.transfer(testAddress, testSecret, "1", "test", to, "swt").then(async res => {
         expect(res).to.equal("111111");
         expect(spy.calledOnceWith(testAddress)).to.true;
         expect(spy1.calledOnceWith("120000220000000024000000C86140000000000F424068400000000000000A732102C13075B18C87A032226CE383AEFD748D7BB719E02CD7F5A8C1F2C7562DE7C12A7446304402202EFB141373DFB76D87C24BEBE0EAD89E145A1965894D43D6B49BE4D0D96E90E102203F660D691022F4F862CF42D2DCB0F08F51DA5A90D746CB24B435B7026D6F8BF481141270C5BE503A3A22B506457C0FEC97633B44F7DD83149AB1585226C7771B968141D07AE1F524384B61EEF9EA7C06737472696E677D0474657374E1F1")).to.true;
         sandbox.restore();
+        expect(await swtcSequence.get()).to.equal(201);
+        swtcSequence.reset();
         done()
       })
     })
