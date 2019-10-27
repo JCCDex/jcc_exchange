@@ -34,9 +34,10 @@ import JCCExchange from "jcc_exchange";
 const hosts = ["localhost"];
 const port = 80;
 const https = false;
+const retry = 3; // default value
 
-// init value of hosts、port & https
-JCCExchange.init(hosts, port, https);
+// init value of hosts、port、https & retry
+JCCExchange.init(hosts, port, https, retry);
 
 // create an order
 // buy 1 jcc with 1 swt

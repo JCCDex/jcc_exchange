@@ -37,12 +37,13 @@ class JCCExchange {
     private static retry: number;
 
     /**
-     * init value of hosts、port & https
+     * init value of hosts、port、https & retry
      *
      * @static
      * @param {string[]} hosts
      * @param {number} port
      * @param {boolean} https
+     * @param {number} [retry=3]
      * @memberof JCCExchange
      */
     public static init(hosts: string[], port: number, https: boolean, retry: number = 3) {
@@ -156,17 +157,16 @@ class JCCExchange {
         });
     }
 
-    private static async submit(secret: string, tx: ICancelExchange | ICreateExchange | IPayExchange, callback: (signature: string) => Promise<any>): Promise<string> {
+    protected static async submit(secret: string, tx: ICancelExchange | ICreateExchange | IPayExchange, callback: (signature: string) => Promise<any>): Promise<string> {
         let hash;
         let retry = JCCExchange.retry;
-        while (true) {
+        while (!hash) {
             const sequence = await swtcSequence.get(JCCExchange.getSequence, tx.Account);
             tx.Sequence = sequence;
             const sign = jingtumSignTx(tx, { seed: secret });
             const res = await callback(sign);
             if (res.result) {
                 hash = res.data.hash;
-                break;
             } else {
                 const resultCode = res.data && res.data.result;
                 if (resultCode !== "terPRE_SEQ" && resultCode !== "tefPAST_SEQ") {
