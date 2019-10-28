@@ -156,14 +156,14 @@ class JCCExchange {
             }
         });
     }
-
     protected static async submit(secret: string, tx: ICancelExchange | ICreateExchange | IPayExchange, callback: (signature: string) => Promise<any>): Promise<string> {
         let hash;
         let retry = JCCExchange.retry;
         while (!hash) {
+            const copyTx = Object.assign({}, tx);
             const sequence = await swtcSequence.get(JCCExchange.getSequence, tx.Account);
-            tx.Sequence = sequence;
-            const sign = jingtumSignTx(tx, { seed: secret });
+            copyTx.Sequence = sequence;
+            const sign = jingtumSignTx(copyTx, { seed: secret });
             const res = await callback(sign);
             if (res.result) {
                 hash = res.data.hash;
