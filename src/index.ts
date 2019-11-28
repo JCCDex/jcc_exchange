@@ -63,7 +63,15 @@ class JCCExchange {
         exchangeInstance.destroy();
     }
 
-    public static async getSequence(address): Promise<number> {
+    /**
+     * request sequence
+     *
+     * @static
+     * @param {string} address
+     * @returns {Promise<number>}
+     * @memberof JCCExchange
+     */
+    public static async getSequence(address: string): Promise<number> {
         const inst = exchangeInstance.init(JCCExchange.hosts, JCCExchange.port, JCCExchange.https);
         const res = await inst.getSequence(address);
         if (!res.result) {
@@ -156,10 +164,23 @@ class JCCExchange {
             }
         });
     }
+
+    /**
+     * submit transaction
+     *
+     * @protected
+     * @static
+     * @param {string} secret
+     * @param {(ICancelExchange | ICreateExchange | IPayExchange)} tx
+     * @param {(signature: string) => Promise<any>} callback
+     * @returns {Promise<string>}
+     * @memberof JCCExchange
+     */
     protected static async submit(secret: string, tx: ICancelExchange | ICreateExchange | IPayExchange, callback: (signature: string) => Promise<any>): Promise<string> {
         let hash;
         let retry = JCCExchange.retry;
         while (!hash) {
+            // copy transaction because signature action will change origin transaction
             const copyTx = Object.assign({}, tx);
             const sequence = await swtcSequence.get(JCCExchange.getSequence, tx.Account);
             copyTx.Sequence = sequence;

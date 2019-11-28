@@ -67,7 +67,7 @@ export const swtcSequence = (() => {
     };
 
     /**
-     * sequence add one
+     * sequence add 1
      *
      */
     const rise = () => {
@@ -75,7 +75,7 @@ export const swtcSequence = (() => {
     };
 
     /**
-     * reset sequence to -1 which is default value
+     * reset sequence to -1
      *
      */
     const reset = () => {
