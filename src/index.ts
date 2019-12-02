@@ -169,8 +169,8 @@ class JCCExchange {
      * set brokerage
      *
      * @static
-     * @param {string} platformSecret platform wallet secret
      * @param {string} platformAccount platform wallet address
+     * @param {string} platformSecret platform wallet secret
      * @param {string} feeAccount fee wallet address
      * @param {number} rateNum fee numerator
      * @param {number} rateDen fee denominator
