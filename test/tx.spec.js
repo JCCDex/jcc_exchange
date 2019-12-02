@@ -1,4 +1,4 @@
-const { serializeCreateOrder, serializeCancelOrder, serializePayment } = require('../lib/tx');
+const { serializeBrokerage, serializeCreateOrder, serializeCancelOrder, serializePayment } = require('../lib/tx');
 const chai = require('chai');
 const expect = chai.expect;
 const testAddress = 'jpgWGpfHz8GxqUjz5nb6ej8eZJQtiF6KhH';
@@ -136,6 +136,25 @@ describe('test tx', function() {
           currency: 'CNY',
           issuer: 'jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or'
         }
+      })
+    })
+  })
+
+  describe('test serializeBrokerage', function() {
+    it('format correctly', function() {
+      let tx = serializeBrokerage(testAddress, testAddress, 1, 1000, "xxx");
+      expect(tx).to.deep.equal({
+        Account: testAddress,
+        Amount: {
+          currency: "XXX",
+          issuer: "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or",
+          value: "0"
+        },
+        Fee: 10 / 1000000,
+        FeeAccountID: testAddress,
+        OfferFeeRateDen: 1000,
+        OfferFeeRateNum: 1,
+        TransactionType: "Brokerage"
       })
     })
   })

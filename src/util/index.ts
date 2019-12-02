@@ -17,14 +17,16 @@ export const exchangeInstance = (() => {
         if (inst === null) {
             inst = new JcExchange(hosts, port, https);
         } else {
-            let isEqual = true;
             try {
                 assert.deepStrictEqual(inst.hosts, hosts);
             } catch (error) {
-                isEqual = false;
+                inst.hosts = hosts;
             }
-            if (!isEqual || inst.port !== port || inst.https !== https) {
-                inst = new JcExchange(hosts, port, https);
+            if (inst.port !== port) {
+                inst.port = port;
+            }
+            if (inst.https !== https) {
+                inst.https = https;
             }
         }
 
