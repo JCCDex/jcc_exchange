@@ -1,5 +1,5 @@
 
-import { ExchangeType, IAmount, ICancelExchange, ICreateExchange, IMemo, IPayExchange } from "../model";
+import { ExchangeType, IAmount, IBrokerageExchange, ICancelExchange, ICreateExchange, IMemo, IPayExchange } from "../model";
 
 export const serializeCreateOrder = (address: string, amount: string, base: string, counter: string, sum: string, type: ExchangeType, platform: string, issuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"): ICreateExchange => {
     const account = address;
@@ -111,6 +111,29 @@ export const serializePayment = (address: string, amount: string, to: string, to
         Flags: 0,
         Memos: memos,
         TransactionType: "Payment"
+    };
+
+    return tx;
+};
+
+export const serializeBrokerage = (platformAccount: string, feeAccount: string, rateNum: number, rateDen: number, token: string, issuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"): IBrokerageExchange => {
+
+    let _amount: IAmount | string;
+
+    _amount = {
+        currency: token.toUpperCase(),
+        issuer,
+        value: "0"
+    };
+
+    const tx = {
+        Account: platformAccount,
+        Amount: _amount,
+        Fee: 10 / 1000000,
+        FeeAccountID: feeAccount,
+        OfferFeeRateDen: rateDen,
+        OfferFeeRateNum: rateNum,
+        TransactionType: "Brokerage"
     };
 
     return tx;

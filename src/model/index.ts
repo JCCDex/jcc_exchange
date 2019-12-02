@@ -54,3 +54,14 @@ export interface IPayExchange {
     TransactionType: string,
     Memos: IMemo[]
 }
+
+export interface IBrokerageExchange {
+    Account: string,
+    Amount: string | IAmount
+    Fee: number,
+    FeeAccountID: string,
+    OfferFeeRateDen: number,
+    OfferFeeRateNum: number,
+    Sequence?: number,
+    TransactionType: string
+}
