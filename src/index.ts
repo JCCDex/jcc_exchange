@@ -25,8 +25,8 @@
  */
 
 import * as jingtumSignTx from "jcc_jingtum_lib/src/local_sign";
-import { ExchangeType, ICancelExchange, ICreateExchange, IMemo, IPayExchange } from "./model";
-import { serializeCancelOrder, serializeCreateOrder, serializePayment } from "./tx";
+import { ExchangeType, IBrokerageExchange, ICancelExchange, ICreateExchange, IMemo, IPayExchange } from "./model";
+import { serializeBrokerage, serializeCancelOrder, serializeCreateOrder, serializePayment } from "./tx";
 import { exchangeInstance, swtcSequence } from "./util";
 
 class JCCExchange {
@@ -166,17 +166,46 @@ class JCCExchange {
     }
 
     /**
+     * set brokerage
+     *
+     * @static
+     * @param {string} platSecret plant wallet secret
+     * @param {string} platAccount plant wallet address
+     * @param {string} feeAccount fee wallet address
+     * @param {number} rateNum fee numerator
+     * @param {number} rateDen fee denominator
+     * @param {string} token token name of transfer
+     * @param {string} [issuer="jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"] issuer address of token, the default address is "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
+     * @returns {Promise<string>} resolve hash if transfer success
+     * @memberof JCCExchange
+     */
+    public static setBrokerage(platSecret: string, platAccount: string, feeAccount: string, rateNum: number, rateDen: number, token: string, issuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"): Promise<string> {
+        return new Promise(async (resolve, reject) => {
+            try {
+                const tx = serializeBrokerage(platAccount, feeAccount, rateNum, rateDen, token, issuer);
+                const inst = exchangeInstance.init(JCCExchange.hosts, JCCExchange.port, JCCExchange.https);
+                const hash = await JCCExchange.submit(platSecret, tx, inst.setBrokerage.bind(inst));
+                swtcSequence.rise();
+                return resolve(hash);
+            } catch (error) {
+                swtcSequence.reset();
+                return reject(error);
+            }
+        });
+    }
+
+    /**
      * submit transaction
      *
      * @protected
      * @static
      * @param {string} secret
-     * @param {(ICancelExchange | ICreateExchange | IPayExchange)} tx
+     * @param {(ICancelExchange | ICreateExchange | IPayExchange) | IBrokerageExchange} tx
      * @param {(signature: string) => Promise<any>} callback
      * @returns {Promise<string>}
      * @memberof JCCExchange
      */
-    protected static async submit(secret: string, tx: ICancelExchange | ICreateExchange | IPayExchange, callback: (signature: string) => Promise<any>): Promise<string> {
+    protected static async submit(secret: string, tx: ICancelExchange | ICreateExchange | IPayExchange | IBrokerageExchange, callback: (signature: string) => Promise<any>): Promise<string> {
         let hash;
         let retry = JCCExchange.retry;
         while (!hash) {

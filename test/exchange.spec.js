@@ -11,6 +11,12 @@ const exchangeInstance = require("../lib/util").exchangeInstance;
 const testAddress = 'jpgWGpfHz8GxqUjz5nb6ej8eZJQtiF6KhH';
 const testSecret = 'snfXQMEVbbZng84CcfdKDASFRi4Hf';
 const testIssuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or";
+
+const plantAccount = "jJSEWTMsB3WFsZyoGGi977wQdTqTmkBFwV";
+const plantSecret = "snJ7ufPZ3LGTfz6V7yLNWABYneLAL";
+const feeAccount = "j98XXLZUCqvP4x7rgFeeYekNgZCotffBH5";
+const testIssuer1 = "jPpTx4EXLUcXWrVbS98FX6TXea4EuQyyU6"
+
 const swtcSequence = require("../lib/util").swtcSequence;
 
 describe('test jc exchange', () => {
@@ -559,5 +565,77 @@ describe('test jc exchange', () => {
         expect(spy1.secondCall.args[0]).to.equal("120000220000000024000000C86140000000000F424068400000000000000A732102C13075B18C87A032226CE383AEFD748D7BB719E02CD7F5A8C1F2C7562DE7C12A7446304402202EFB141373DFB76D87C24BEBE0EAD89E145A1965894D43D6B49BE4D0D96E90E102203F660D691022F4F862CF42D2DCB0F08F51DA5A90D746CB24B435B7026D6F8BF481141270C5BE503A3A22B506457C0FEC97633B44F7DD83149AB1585226C7771B968141D07AE1F524384B61EEF9EA7C06737472696E677D0474657374E1F1")
       }
     })
+  })
+
+  describe('test setBrokerage', () => {
+
+    before(() => {
+      JCCExchange.init(hosts, port, https, 1);
+    })
+
+    afterEach(() => {
+      sandbox.restore();
+      swtcSequence.reset();
+    })
+
+    it('transfer account successfully', async () => {
+      mock.onGet(/^\/exchange\/sequence\//).reply(200, {
+        code: '0',
+        data: {
+          sequence: 10
+        }
+      }, {
+        date: new Date()
+      })
+      mock.onPost('/exchange/brokerage').reply(200, {
+        code: '0',
+        data: {
+          hash: '95A3F55A7DD81695D511CF7F257A9B86FA9DF391B000517A38A8AE303A0CB200'
+        }
+      }, {
+        date: new Date()
+      });
+      const spy = sandbox.spy(JcExchange.prototype, "getSequence");
+      const spy1 = sandbox.spy(JcExchange.prototype, "setBrokerage");
+      const hash = await JCCExchange.setBrokerage(plantSecret, plantAccount, feeAccount, 15, 1000, 'XXX', testIssuer1);
+      expect(hash).to.equal("95A3F55A7DD81695D511CF7F257A9B86FA9DF391B000517A38A8AE303A0CB200");
+      expect(spy.calledOnce).to.true
+      expect(spy1.calledOnce).to.true;
+      expect(spy.calledOnceWith(plantAccount)).to.true;
+      expect(spy1.calledOnceWith("1200CD240000000A39000000000000000F3A00000000000003E861D5471AFD498D00000000000000000000000000005858580000000000F199AF0B483183023A9FD63FFA75AD1DFAE90CEE68400000000000000A732103EF0740D1367F37C9491063BEA541E04D18C8054CDD6DAD0BB2FBF9143810D045744630440220427931637D586F9939413826D41ECAAF195967FA508AA09367A2C4631CF9B44E02200B86898BF4C1837F001091131798AA5C0E65DD412EAA139E2B4FA9152CF451728114BF40A5DC91EF5047D81C041839104965F3DC23698914605D3433AC480BD784E51FC7B731258A04518D1F")).to.true;
+      expect(await swtcSequence.get()).to.equal(11);
+      swtcSequence.reset();
+    })
+
+    it('get sequence failed', async () => {
+      mock.onGet(/^\/exchange\/sequence\//).reply(200, {
+        code: '109',
+        msg: 'account is invalid'
+      }, {
+        date: new Date()
+      })
+      try {
+        await JCCExchange.setBrokerage(plantSecret, plantAccount, feeAccount, 0, 1000, 'XXX', testIssuer1);
+      } catch (error) {
+        expect(error.message).to.equal('account is invalid');
+      }
+    })
+
+    it('local singature failed', async () => {
+      mock.onGet(/^\/exchange\/sequence\//).reply(200, {
+        code: '0',
+        data: {
+          sequence: '200'
+        }
+      }, {
+        date: new Date()
+      })
+      try {
+        await JCCExchange.setBrokerage(plantSecret, plantAccount, feeAccount, 0, 1000, 'XXX', testIssuer1);
+      } catch (error) {
+        expect(error.message).to.equal('Value is not a number (Sequence)');
+      }
+    })
+
   })
 })
