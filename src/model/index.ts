@@ -57,10 +57,11 @@ export interface IPayExchange {
 
 export interface IBrokerageExchange {
     Account: string,
-    OfferFeeRateNum: number,
-    OfferFeeRateDen: number,
-    FeeAccountID: string,
     Amount: string | IAmount
-    TransactionType: string,
+    Fee: number,
+    FeeAccountID: string,
+    OfferFeeRateDen: number,
+    OfferFeeRateNum: number,
     Sequence?: number,
+    TransactionType: string
 }

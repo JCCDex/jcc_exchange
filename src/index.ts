@@ -169,8 +169,8 @@ class JCCExchange {
      * set brokerage
      *
      * @static
-     * @param {string} platSecret plant wallet secret
-     * @param {string} platAccount plant wallet address
+     * @param {string} platformSecret platform wallet secret
+     * @param {string} platformAccount platform wallet address
      * @param {string} feeAccount fee wallet address
      * @param {number} rateNum fee numerator
      * @param {number} rateDen fee denominator
@@ -179,12 +179,12 @@ class JCCExchange {
      * @returns {Promise<string>} resolve hash if transfer success
      * @memberof JCCExchange
      */
-    public static setBrokerage(platSecret: string, platAccount: string, feeAccount: string, rateNum: number, rateDen: number, token: string, issuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"): Promise<string> {
+    public static setBrokerage(platformAccount: string, platformSecret: string, feeAccount: string, rateNum: number, rateDen: number, token: string, issuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"): Promise<string> {
         return new Promise(async (resolve, reject) => {
             try {
-                const tx = serializeBrokerage(platAccount, feeAccount, rateNum, rateDen, token, issuer);
+                const tx = serializeBrokerage(platformAccount, feeAccount, rateNum, rateDen, token, issuer);
                 const inst = exchangeInstance.init(JCCExchange.hosts, JCCExchange.port, JCCExchange.https);
-                const hash = await JCCExchange.submit(platSecret, tx, inst.setBrokerage.bind(inst));
+                const hash = await JCCExchange.submit(platformSecret, tx, inst.setBrokerage.bind(inst));
                 swtcSequence.rise();
                 return resolve(hash);
             } catch (error) {

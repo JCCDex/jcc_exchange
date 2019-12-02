@@ -116,18 +116,18 @@ export const serializePayment = (address: string, amount: string, to: string, to
     return tx;
 };
 
-export const serializeBrokerage = (platAccount: string, feeAccount: string, rateNum: number, rateDen: number, token: string, issuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"): IBrokerageExchange => {
+export const serializeBrokerage = (platformAccount: string, feeAccount: string, rateNum: number, rateDen: number, token: string, issuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"): IBrokerageExchange => {
 
     let _amount: IAmount | string;
 
     _amount = {
         currency: token.toUpperCase(),
         issuer,
-        value: "2000"
+        value: "0"
     };
 
     const tx = {
-        Account: platAccount,
+        Account: platformAccount,
         Amount: _amount,
         Fee: 10 / 1000000,
         FeeAccountID: feeAccount,
