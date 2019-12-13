@@ -53,7 +53,7 @@ export const swtcSequence = (() => {
     let sequence: number = -1;
 
     /**
-     * get suquence
+     * get sequence
      *
      * the value is from callback function if the sequence is -1, otherwise is from memory
      *
