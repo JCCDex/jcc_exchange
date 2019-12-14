@@ -22,6 +22,7 @@
     "coveralls": "^3.0.9",
     "gulp": "^4.0.2",
     "gulp-shell": "^0.7.1",
+    "husky": "^3.1.0",
     "karma": "^4.4.1",
     "karma-browserify": "^6.0.0",
     "karma-chrome-launcher": "^3.1.0",
@@ -32,6 +33,8 @@
     "karma-webpack": "^4.0.2",
     "mocha": "^6.2.2",
     "nyc": "^14.1.1",
+    "prettier": "^1.19.1",
+    "pretty-quick": "^2.0.1",
     "sinon": "^7.5.0",
     "ts-loader": "^6.2.1",
     "tslint": "^5.20.1",
@@ -47,7 +50,8 @@
     "test:node": "tsc && nyc --extension=.ts --reporter=lcov --reporter=html --reporter=text mocha --timeout=3000 test/*.spec.js",
     "test:browser": "tsc && karma start karma.conf.js",
     "tslint": "tslint --project tsconfig.json --config tslint.json",
-    "watch:tslint": "gulp dev"
+    "watch:tslint": "gulp dev",
+    "pretty": "prettier --write {src,test}/**/*.{js,ts}"
   },
   "repository": {
     "type": "git",
@@ -61,6 +65,11 @@
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/JCCDex/jcc_exchange/issues"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
   },
   "homepage": "https://github.com/JCCDex/jcc_exchange#readme"
 }
