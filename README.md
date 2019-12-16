@@ -28,60 +28,64 @@ npm install jcc_exchange
 Breaking changes since v2.0.0, if you used v1.0.9 see [v1.0.9](https://github.com/JCCDex/jcc_exchange/blob/master/docs/v1.0.9.md).
 
 ```javascript
-import JCCExchange from "jcc_exchange";
 
-// example
-const hosts = ["localhost"];
-const port = 80;
-const https = false;
-const retry = 3; // default value
+var JCCExchange = require('jcc_exchange').JCCExchange;
+async function main() {
+    // example
+    const hosts = ["localhost"];
+    const port = 80;
+    const https = false;
+    const retry = 3; // default value
 
-// init value of hosts、port、https & retry
-JCCExchange.init(hosts, port, https, retry);
+    // init value of hosts、port、https & retry
+    JCCExchange.init(hosts, port, https, retry);
 
-// create an order
-// buy 1 jcc with 1 swt
-const address = "";
-const secret = "";
-const amount = "1";
-const base = "jjcc";
-const counter = "swt";
-const sum = "1";
-const type = "buy"; // if sell 1 jjcc with 1 swt, the value of type is "sell"
-const platform = ""; // swtc address for service charge
-const issuer; // the default value is "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
-try {
-    const hash = await JCCExchange.createOrder(address, secret, amount, base, counter, sum, type, platform, issuer);
-    console.log(hash);
-} catch (error) {
-    console.log(error);
+    // create an order
+    // buy 1 jcc with 1 swt
+    const address = "";
+    const secret = "";
+    const amount = "1";
+    const base = "jjcc";
+    const counter = "swt";
+    const sum = "1";
+    const type = "buy"; // if sell 1 jjcc with 1 swt, the value of type is "sell"
+    const platform = ""; // swtc address for service charge
+    const issuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"; // the default value is "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
+    try {
+        const hash = await JCCExchange.createOrder(address, secret, amount, base, counter, sum, type, platform, issuer);
+        console.log(hash);
+    } catch (error) {
+        console.log(error);
+    }
+
+    // cancel an order
+    const address = "";
+    const secret = "";
+    const orderSequence = 0;
+    try {
+        const hash = await JCCExchange.cancelOrder(address, secret, orderSequence);
+        console.log(hash);
+    } catch (error) {
+        console.log(error);
+    }
+
+    // transfer token
+    // transfer 1 jjcc to "jKTtq57iqHoHg3cP7Rryzug9Q2puLX1kHh" from "jpgWGpfHz8GxqUjz5nb6ej8eZJQtiF6KhH"
+    const address = "jpgWGpfHz8GxqUjz5nb6ej8eZJQtiF6KhH";
+    const secret = "";
+    const amount = "1";
+    const memo = "test";
+    const to = "jKTtq57iqHoHg3cP7Rryzug9Q2puLX1kHh";
+    const token = "jjcc";
+    const issuer; // the default value is "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
+    try {
+        const hash = await JCCExchange.transfer(address, secret, amount, memo, to, token, issuer);
+        console.log(hash);
+    } catch (error) {
+        console.log(error);
+    }
 }
 
-// cancel an order
-const address = "";
-const secret = "";
-const orderSequence = 0;
-try {
-    const hash = await JCCExchange.cancelOrder(address, secret, orderSequence);
-    console.log(hash);
-} catch (error) {
-    console.log(error);
-}
-
-// transfer token
-// transfer 1 jjcc to "jKTtq57iqHoHg3cP7Rryzug9Q2puLX1kHh" from "jpgWGpfHz8GxqUjz5nb6ej8eZJQtiF6KhH"
-const address = "jpgWGpfHz8GxqUjz5nb6ej8eZJQtiF6KhH";
-const secret = "";
-const amount = "1";
-const memo = "test";
-const to = "jKTtq57iqHoHg3cP7Rryzug9Q2puLX1kHh";
-const token = "jjcc";
-const issuer; // the default value is "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
-try {
-    const hash = await JCCExchange.transfer(address, secret, amount, memo, to, token, issuer);
-    console.log(hash);
-} catch (error) {
-    console.log(error);
-}
+main();
 
 ```
