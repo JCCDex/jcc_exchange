@@ -211,17 +211,17 @@ class JCCExchange {
       copyTx.Sequence = sequence;
       const sign = jingtumSignTx(copyTx, { seed: secret });
       const res = await callback(sign);
-      if (res?.result?.engine_result === "tesSUCCESS") {
+      const engine_result = res.result.engine_result;
+      if (engine_result === "tesSUCCESS") {
         hash = res.result.tx_json.hash;
       } else {
-        const resultCode = res?.result?.engine_result;
-        if (resultCode !== "terPRE_SEQ" && resultCode !== "tefPAST_SEQ") {
+        if (engine_result !== "terPRE_SEQ" && engine_result !== "tefPAST_SEQ") {
           throw new Error(res.result.engine_result_message);
         }
         retry = retry - 1;
         swtcSequence.reset();
         if (retry < 0) {
-          throw new Error(res.msg);
+          throw new Error(res.result.engine_result_message);
         }
       }
     }
