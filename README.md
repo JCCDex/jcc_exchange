@@ -7,11 +7,11 @@
 
 ## preface
 
-[jcc_exchange](https://github.com/JCCDex/jcc_exchange) 可以提交订单和转账两种交易，而且都是在本地签名后发送到井通节点。自动管理sequence以提高交易频率。 如果sequence失效，支持重试机制（默认3次）。
+[jcc_exchange](https://github.com/JCCDex/jcc_exchange) 可以提交订单和转账两种交易，而且都是在本地签名后发送到井通节点。自动管理 sequence 以提高交易频率。 如果 sequence 失效，支持重试机制（默认 3 次）。
 
 [jcc_exchange](https://github.com/JCCDex/jcc_exchange) is toolkit to submit order/payment transaction to Jingtum node after local signature. Automatically manage sequence to increase transaction frequency. If sequence is ineffective, retry again (default thrice).
 
-* 支持浏览器 Support running in browsers
+- 支持浏览器 Support running in browsers
 
 井畅应用交流群: 557524730
 
@@ -24,6 +24,8 @@ npm install jcc_exchange
 ```
 
 ## Usage
+
+Since v3.0.0, the transaction is submitted to chain node, see [v3.0.0](https://github.com/JCCDex/jcc_exchange/releases/tag/3.0.0).
 
 Breaking changes since v2.0.0, if you used v1.0.9 see [v1.0.9](https://github.com/JCCDex/jcc_exchange/blob/master/docs/v1.0.9.md).
 
