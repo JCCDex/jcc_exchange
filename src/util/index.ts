@@ -1,8 +1,8 @@
 import assert = require("assert");
-import { JcExchange } from "jcc_rpc";
+import { JcNodeRpc } from "jcc_rpc";
 
 export const exchangeInstance = (() => {
-  let inst: JcExchange = null;
+  let inst: JcNodeRpc = null;
 
   /**
    * init instance of jc exchange
@@ -10,11 +10,11 @@ export const exchangeInstance = (() => {
    * @param {string[]} hosts
    * @param {number} port
    * @param {boolean} https
-   * @returns {JcExchange}
+   * @returns {JcNodeRpc}
    */
-  const init = (hosts: string[], port: number, https: boolean): JcExchange => {
+  const init = (hosts: string[], port: number, https: boolean): JcNodeRpc => {
     if (inst === null) {
-      inst = new JcExchange(hosts, port, https);
+      inst = new JcNodeRpc(hosts, port, https);
     } else {
       try {
         assert.deepStrictEqual(inst.hosts, hosts);
