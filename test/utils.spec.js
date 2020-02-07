@@ -41,30 +41,12 @@ describe("test exchangeInstance", function() {
     });
 
     it("should init twice if hosts is changed", function() {
-      const inst = exchangeInstance.init(hosts, port, https);
+      const inst = exchangeInstance.init(["http://localhost:80"]);
       expect(inst instanceof JcNodeRpc).to.true;
-      expect(inst.hosts).to.deep.equal(["localhost"]);
-      const inst2 = exchangeInstance.init([], port, https);
+      expect(inst.urls).to.deep.equal(["http://localhost:80"]);
+      const inst2 = exchangeInstance.init([]);
       expect(inst).to.equal(inst2);
-      expect(inst2.hosts).to.deep.equal([]);
-    });
-
-    it("should init twice if port is changed", function() {
-      const inst = exchangeInstance.init(hosts, port, https);
-      expect(inst instanceof JcNodeRpc).to.true;
-      expect(inst.port).to.equal(80);
-      const inst2 = exchangeInstance.init(hosts, 443, https);
-      expect(inst).to.equal(inst2);
-      expect(inst2.port).to.equal(443);
-    });
-
-    it("should init twice if https is changed", function() {
-      const inst = exchangeInstance.init(hosts, port, https);
-      expect(inst instanceof JcNodeRpc).to.true;
-      expect(inst.https).to.equal(false);
-      const inst2 = exchangeInstance.init(hosts, port, true);
-      expect(inst).to.equal(inst2);
-      expect(inst2.https).to.equal(true);
+      expect(inst2.urls).to.deep.equal([]);
     });
   });
 });

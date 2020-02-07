@@ -27,11 +27,19 @@ describe("test jc exchange", () => {
     });
 
     it("call init", () => {
-      JCCExchange.init(hosts, port, https);
-      expect(JCCExchange.hosts).to.deep.equal([]);
-      expect(JCCExchange.port).to.equal(80);
-      expect(JCCExchange.https).to.equal(false);
+      JCCExchange.init([]);
+      expect(JCCExchange.urls).to.deep.equal([]);
       expect(JCCExchange.retry).to.equal(3);
+      JCCExchange.init([], 2);
+      expect(JCCExchange.urls).to.deep.equal([]);
+      expect(JCCExchange.retry).to.equal(2);
+      JCCExchange.init(["localhost"], 80, false, 2);
+      expect(JCCExchange.urls).to.deep.equal(["http://localhost:80"]);
+      expect(JCCExchange.retry).to.equal(2);
+      JCCExchange.init(["localhost"], 443, true);
+      expect(JCCExchange.urls).to.deep.equal(["https://localhost:443"]);
+      expect(JCCExchange.retry).to.equal(3);
+      expect(() => JCCExchange.init(["localhost"], 443, true, 4, 5)).throws("arguments does not match");
     });
   });
 
@@ -50,7 +58,7 @@ describe("test jc exchange", () => {
 
   describe("test createOrder", () => {
     before(() => {
-      JCCExchange.init(hosts, port, https, 1);
+      JCCExchange.init([], 1);
     });
 
     afterEach(() => {
@@ -187,7 +195,7 @@ describe("test jc exchange", () => {
 
   describe("test cancelOrder", () => {
     before(() => {
-      JCCExchange.init(hosts, port, https, 2);
+      JCCExchange.init([], 2);
     });
 
     afterEach(() => {
@@ -321,7 +329,7 @@ describe("test jc exchange", () => {
     const to = "jEaAWgAxr8fcVSNNeKprbD7UK4JUxnCn9C";
 
     before(() => {
-      JCCExchange.init(hosts, port, https, 1);
+      JCCExchange.init([], 1);
     });
 
     afterEach(() => {
@@ -456,7 +464,7 @@ describe("test jc exchange", () => {
 
   describe("test setBrokerage", () => {
     before(() => {
-      JCCExchange.init(hosts, port, https, 1);
+      JCCExchange.init([], 1);
     });
 
     afterEach(() => {

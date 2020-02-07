@@ -28,28 +28,48 @@ import * as jingtumSignTx from "jcc_jingtum_lib/src/local_sign";
 import { ExchangeType, IBrokerageExchange, ICancelExchange, ICreateExchange, IMemo, IPayExchange } from "./model";
 import { serializeBrokerage, serializeCancelOrder, serializeCreateOrder, serializePayment } from "./tx";
 import { exchangeInstance, swtcSequence } from "./util";
-
 class JCCExchange {
-  private static hosts: string[];
-  private static port: number;
-  private static https: boolean;
+  private static urls: string[];
   private static retry: number;
 
+  /**
+   * init value of urls and retry
+   *
+   * @static
+   * @param {string[]} urls
+   * @param {number} [retry]  default 3
+   * @memberof JCCExchange
+   */
+  public static init(urls: string[], retry?: number): void;
   /**
    * init value of hosts、port、https & retry
    *
    * @static
    * @param {string[]} hosts
-   * @param {number} port
+   * @param {(number | string)} port
    * @param {boolean} https
-   * @param {number} [retry=3]
+   * @param {number} [retry] default 3
    * @memberof JCCExchange
    */
-  public static init(hosts: string[], port: number, https: boolean, retry: number = 3) {
-    JCCExchange.hosts = hosts;
-    JCCExchange.port = port;
-    JCCExchange.https = https;
-    JCCExchange.retry = retry;
+  public static init(hosts: string[], port: number | string, https: boolean, retry?: number): void;
+  public static init(...args: any[]): void {
+    let urls: string[];
+    let retry: number;
+    const len = args.length;
+    if (len === 2 || len === 1) {
+      urls = args[0];
+      retry = args[1];
+    } else if (len === 4 || len === 3) {
+      const hosts = args[0];
+      const port = args[1];
+      const https = args[2];
+      retry = args[3];
+      urls = hosts.map((host) => (https ? `https://${host}:${port}` : `http://${host}:${port}`));
+    } else {
+      throw new Error("arguments does not match");
+    }
+    JCCExchange.urls = urls;
+    JCCExchange.retry = retry || 3;
   }
 
   /**
@@ -71,7 +91,7 @@ class JCCExchange {
    * @memberof JCCExchange
    */
   public static async getSequence(address: string): Promise<number> {
-    const inst = exchangeInstance.init(JCCExchange.hosts, JCCExchange.port, JCCExchange.https);
+    const inst = exchangeInstance.init(JCCExchange.urls);
     const sequence = await inst.getSequence(address);
     return sequence;
   }
@@ -96,7 +116,7 @@ class JCCExchange {
     return new Promise(async (resolve, reject) => {
       try {
         const tx = serializeCreateOrder(address, amount, base, counter, sum, type, platform, issuer);
-        const inst = exchangeInstance.init(JCCExchange.hosts, JCCExchange.port, JCCExchange.https);
+        const inst = exchangeInstance.init(JCCExchange.urls);
         const hash = await JCCExchange.submit(secret, tx, inst.createOrder.bind(inst));
         swtcSequence.rise();
         return resolve(hash);
@@ -121,7 +141,7 @@ class JCCExchange {
     return new Promise(async (resolve, reject) => {
       try {
         const tx = serializeCancelOrder(address, offerSequence);
-        const inst = exchangeInstance.init(JCCExchange.hosts, JCCExchange.port, JCCExchange.https);
+        const inst = exchangeInstance.init(JCCExchange.urls);
         const hash = await JCCExchange.submit(secret, tx, inst.cancelOrder.bind(inst));
         swtcSequence.rise();
         return resolve(hash);
@@ -150,7 +170,7 @@ class JCCExchange {
     return new Promise(async (resolve, reject) => {
       try {
         const tx = serializePayment(address, amount, to, token, memo, issuer);
-        const inst = exchangeInstance.init(JCCExchange.hosts, JCCExchange.port, JCCExchange.https);
+        const inst = exchangeInstance.init(JCCExchange.urls);
         const hash = await JCCExchange.submit(secret, tx, inst.transfer.bind(inst));
         swtcSequence.rise();
         return resolve(hash);
@@ -179,7 +199,7 @@ class JCCExchange {
     return new Promise(async (resolve, reject) => {
       try {
         const tx = serializeBrokerage(platformAccount, feeAccount, rateNum, rateDen, token, issuer);
-        const inst = exchangeInstance.init(JCCExchange.hosts, JCCExchange.port, JCCExchange.https);
+        const inst = exchangeInstance.init(JCCExchange.urls);
         const hash = await JCCExchange.submit(platformSecret, tx, inst.setBrokerage.bind(inst));
         swtcSequence.rise();
         return resolve(hash);

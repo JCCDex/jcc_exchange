@@ -12,20 +12,14 @@ export const exchangeInstance = (() => {
    * @param {boolean} https
    * @returns {JcNodeRpc}
    */
-  const init = (hosts: string[], port: number, https: boolean): JcNodeRpc => {
+  const init = (urls: string[]): JcNodeRpc => {
     if (inst === null) {
-      inst = new JcNodeRpc(hosts, port, https);
+      inst = new JcNodeRpc(urls);
     } else {
       try {
-        assert.deepStrictEqual(inst.hosts, hosts);
+        assert.deepStrictEqual(inst.urls, urls);
       } catch (error) {
-        inst.hosts = hosts;
-      }
-      if (inst.port !== port) {
-        inst.port = port;
-      }
-      if (inst.https !== https) {
-        inst.https = https;
+        inst.urls = urls;
       }
     }
 
