@@ -17,10 +17,6 @@ const testIssuer1 = "jPpTx4EXLUcXWrVbS98FX6TXea4EuQyyU6";
 const swtcSequence = require("../lib/util").swtcSequence;
 
 describe("test jc exchange", () => {
-  const hosts = [];
-  const port = 80;
-  const https = false;
-
   describe("test init", () => {
     it("init should be a function", () => {
       expect(typeof JCCExchange.init).to.equal("function");
@@ -63,7 +59,7 @@ describe("test jc exchange", () => {
 
     afterEach(() => {
       sandbox.restore();
-      swtcSequence.reset();
+      swtcSequence.clear();
     });
 
     it("create order successfully", async () => {
@@ -86,7 +82,7 @@ describe("test jc exchange", () => {
           "120007220000000024000000C864D4838D7EA4C6800000000000000000000000004A4A43430000000000A582E432BFC48EEDEF852C814EC57F3CD2D4159665D4838D7EA4C68000000000000000000000000000434E590000000000A582E432BFC48EEDEF852C814EC57F3CD2D4159668400000000000000A732102C13075B18C87A032226CE383AEFD748D7BB719E02CD7F5A8C1F2C7562DE7C12A7446304402204BAE7257177ECB10E43FBD06C8158F1AC2290A44081B796C9BD47725536A9B9902200D9D86C1479F482D207BF9CEAC66FD9D7BE9498110A566EC69A713AAB0D3E95281141270C5BE503A3A22B506457C0FEC97633B44F7DD8D14896E3F7353697ECE52645D9C502F08BB2EDC5717"
         )
       ).to.true;
-      expect(await swtcSequence.get()).to.equal(201);
+      expect(await swtcSequence.get(null, testAddress)).to.equal(201);
     });
 
     it("if the type is wrong", async () => {
@@ -200,7 +196,7 @@ describe("test jc exchange", () => {
 
     afterEach(() => {
       sandbox.restore();
-      swtcSequence.reset();
+      swtcSequence.clear();
     });
 
     it("cancel order successfully", async () => {
@@ -222,7 +218,7 @@ describe("test jc exchange", () => {
       expect(
         stub1.calledOnceWithExactly("120008220000000024000000C82019000000C868400000000000000A732102C13075B18C87A032226CE383AEFD748D7BB719E02CD7F5A8C1F2C7562DE7C12A74473045022100C13F2C789E428CC41DC0579471EB826A1089A13DE9B85293D1879718AA03BAF102203E1A013FBEFD8F497DE5AB5890EBEA3E013BD71B38852D9B2A552EC2F3971CB781141270C5BE503A3A22B506457C0FEC97633B44F7DD")
       ).to.true;
-      expect(await swtcSequence.get()).to.equal(201);
+      expect(await swtcSequence.get(null, testAddress)).to.equal(201);
     });
 
     it("get sequence failed", async () => {
@@ -334,7 +330,7 @@ describe("test jc exchange", () => {
 
     afterEach(() => {
       sandbox.restore();
-      swtcSequence.reset();
+      swtcSequence.clear();
     });
 
     it("transfer account successfully", async () => {
@@ -359,8 +355,7 @@ describe("test jc exchange", () => {
           "120000220000000024000000C86140000000000F424068400000000000000A732102C13075B18C87A032226CE383AEFD748D7BB719E02CD7F5A8C1F2C7562DE7C12A7446304402202EFB141373DFB76D87C24BEBE0EAD89E145A1965894D43D6B49BE4D0D96E90E102203F660D691022F4F862CF42D2DCB0F08F51DA5A90D746CB24B435B7026D6F8BF481141270C5BE503A3A22B506457C0FEC97633B44F7DD83149AB1585226C7771B968141D07AE1F524384B61EEF9EA7C06737472696E677D0474657374E1F1"
         )
       ).to.true;
-      expect(await swtcSequence.get()).to.equal(201);
-      swtcSequence.reset();
+      expect(await swtcSequence.get(null, testAddress)).to.equal(201);
     });
 
     it("get sequence failed", async () => {
@@ -469,7 +464,7 @@ describe("test jc exchange", () => {
 
     afterEach(() => {
       sandbox.restore();
-      swtcSequence.reset();
+      swtcSequence.clear();
     });
 
     it("set brokerage successfully", async () => {
@@ -494,8 +489,7 @@ describe("test jc exchange", () => {
           "1200CD240000000A39000000000000000F3A00000000000003E86180000000000000000000000000000000000000005858580000000000A582E432BFC48EEDEF852C814EC57F3CD2D4159668400000000000000A732103EF0740D1367F37C9491063BEA541E04D18C8054CDD6DAD0BB2FBF9143810D04574473045022100D2F9C3341B0CD666D6A78DE5296AAB8C3462FD8B59AD3888D8A202DAC2974E5602205E4435D2D1148ACBF608679ACB3ACE7944BA2CE3CC50463CAF4701D200CEFBA88114BF40A5DC91EF5047D81C041839104965F3DC23698914605D3433AC480BD784E51FC7B731258A04518D1F"
         )
       ).to.true;
-      expect(await swtcSequence.get()).to.equal(11);
-      swtcSequence.reset();
+      expect(await swtcSequence.get(null, platformAccount)).to.equal(11);
     });
 
     it("get sequence failed", async () => {

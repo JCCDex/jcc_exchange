@@ -118,10 +118,10 @@ class JCCExchange {
         const tx = serializeCreateOrder(address, amount, base, counter, sum, type, platform, issuer);
         const inst = exchangeInstance.init(JCCExchange.urls);
         const hash = await JCCExchange.submit(secret, tx, inst.createOrder.bind(inst));
-        swtcSequence.rise();
+        swtcSequence.rise(address);
         return resolve(hash);
       } catch (error) {
-        swtcSequence.reset();
+        swtcSequence.reset(address);
         return reject(error);
       }
     });
@@ -143,10 +143,10 @@ class JCCExchange {
         const tx = serializeCancelOrder(address, offerSequence);
         const inst = exchangeInstance.init(JCCExchange.urls);
         const hash = await JCCExchange.submit(secret, tx, inst.cancelOrder.bind(inst));
-        swtcSequence.rise();
+        swtcSequence.rise(address);
         return resolve(hash);
       } catch (error) {
-        swtcSequence.reset();
+        swtcSequence.reset(address);
         return reject(error);
       }
     });
@@ -172,10 +172,10 @@ class JCCExchange {
         const tx = serializePayment(address, amount, to, token, memo, issuer);
         const inst = exchangeInstance.init(JCCExchange.urls);
         const hash = await JCCExchange.submit(secret, tx, inst.transfer.bind(inst));
-        swtcSequence.rise();
+        swtcSequence.rise(address);
         return resolve(hash);
       } catch (error) {
-        swtcSequence.reset();
+        swtcSequence.reset(address);
         return reject(error);
       }
     });
@@ -201,10 +201,10 @@ class JCCExchange {
         const tx = serializeBrokerage(platformAccount, feeAccount, rateNum, rateDen, token, issuer);
         const inst = exchangeInstance.init(JCCExchange.urls);
         const hash = await JCCExchange.submit(platformSecret, tx, inst.setBrokerage.bind(inst));
-        swtcSequence.rise();
+        swtcSequence.rise(platformAccount);
         return resolve(hash);
       } catch (error) {
-        swtcSequence.reset();
+        swtcSequence.reset(platformAccount);
         return reject(error);
       }
     });
@@ -239,7 +239,7 @@ class JCCExchange {
           throw new Error(res.result.engine_result_message);
         }
         retry = retry - 1;
-        swtcSequence.reset();
+        swtcSequence.reset(tx.Account);
         if (retry < 0) {
           throw new Error(res.result.engine_result_message);
         }
