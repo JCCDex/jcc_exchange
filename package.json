@@ -10,7 +10,7 @@
   "dependencies": {
     "@types/node": "^12.12.14",
     "babel-runtime": "^6.26.0",
-    "jcc_jingtum_lib": "^1.5.1",
+    "jcc_jingtum_lib": "^1.5.3",
     "jcc_rpc": "^0.2.0"
   },
   "devDependencies": {

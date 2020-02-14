@@ -1,14 +1,16 @@
-import { ExchangeType, IAmount, IBrokerageExchange, ICancelExchange, ICreateExchange, IMemo, IPayExchange } from "../model";
+import { ExchangeType, IAmount, IBrokerageExchange, ICancelExchange, ICreateExchange, IMemo, IPayExchange } from "../types";
+import { chainConfig } from "../util/config";
 
 export const serializeCreateOrder = (address: string, amount: string, base: string, counter: string, sum: string, type: ExchangeType, platform: string, issuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"): ICreateExchange => {
   const account = address;
-  const fee = 10 / 1000000;
+  const { minGas, nativeToken } = chainConfig.getDefaultConfig();
+  const fee = minGas / 1000000;
   let takerGets;
   let takerPays;
   let flags;
   if (type === "buy") {
     flags = 0;
-    if (base.toUpperCase() === "SWT") {
+    if (base.toUpperCase() === nativeToken) {
       takerPays = amount;
     } else {
       takerPays = {
@@ -18,7 +20,7 @@ export const serializeCreateOrder = (address: string, amount: string, base: stri
       };
     }
 
-    if (counter.toUpperCase() === "SWT") {
+    if (counter.toUpperCase() === nativeToken) {
       takerGets = sum;
     } else {
       takerGets = {
@@ -30,7 +32,7 @@ export const serializeCreateOrder = (address: string, amount: string, base: stri
   } else if (type === "sell") {
     flags = 0x00080000;
 
-    if (counter.toUpperCase() === "SWT") {
+    if (counter.toUpperCase() === nativeToken) {
       takerPays = sum;
     } else {
       takerPays = {
@@ -40,7 +42,7 @@ export const serializeCreateOrder = (address: string, amount: string, base: stri
       };
     }
 
-    if (base.toUpperCase() === "SWT") {
+    if (base.toUpperCase() === nativeToken) {
       takerGets = amount;
     } else {
       takerGets = {
@@ -65,9 +67,10 @@ export const serializeCreateOrder = (address: string, amount: string, base: stri
 };
 
 export const serializeCancelOrder = (address: string, sequence: number): ICancelExchange => {
+  const { minGas } = chainConfig.getDefaultConfig();
   const tx = {
     Account: address,
-    Fee: 10 / 1000000,
+    Fee: minGas / 1000000,
     Flags: 0,
     OfferSequence: sequence,
     TransactionType: "OfferCancel"
@@ -77,8 +80,9 @@ export const serializeCancelOrder = (address: string, sequence: number): ICancel
 
 export const serializePayment = (address: string, amount: string, to: string, token: string, memo: string | IMemo[], issuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"): IPayExchange => {
   let _amount: IAmount | string;
+  const { minGas, nativeToken } = chainConfig.getDefaultConfig();
 
-  if (token.toUpperCase() === "SWT") {
+  if (token.toUpperCase() === nativeToken) {
     _amount = amount;
   } else {
     _amount = {
@@ -107,7 +111,7 @@ export const serializePayment = (address: string, amount: string, to: string, to
     Account: address,
     Amount: _amount,
     Destination: to,
-    Fee: 10 / 1000000,
+    Fee: minGas / 1000000,
     Flags: 0,
     Memos: memos,
     TransactionType: "Payment"
@@ -118,6 +122,7 @@ export const serializePayment = (address: string, amount: string, to: string, to
 
 export const serializeBrokerage = (platformAccount: string, feeAccount: string, rateNum: number, rateDen: number, token: string, issuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"): IBrokerageExchange => {
   let _amount: IAmount | string;
+  const { minGas } = chainConfig.getDefaultConfig();
 
   _amount = {
     currency: token.toUpperCase(),
@@ -128,7 +133,7 @@ export const serializeBrokerage = (platformAccount: string, feeAccount: string, 
   const tx = {
     Account: platformAccount,
     Amount: _amount,
-    Fee: 10 / 1000000,
+    Fee: minGas / 1000000,
     FeeAccountID: feeAccount,
     OfferFeeRateDen: rateDen,
     OfferFeeRateNum: rateNum,

@@ -8,6 +8,7 @@ const exchangeInstance = require("../lib/util").exchangeInstance;
 const testAddress = "jpgWGpfHz8GxqUjz5nb6ej8eZJQtiF6KhH";
 const testSecret = "snfXQMEVbbZng84CcfdKDASFRi4Hf";
 const testIssuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or";
+const chainConfig = require("../lib/util/config").chainConfig;
 
 const platformAccount = "jJSEWTMsB3WFsZyoGGi977wQdTqTmkBFwV";
 const platformSecret = "snJ7ufPZ3LGTfz6V7yLNWABYneLAL";
@@ -49,6 +50,26 @@ describe("test jc exchange", () => {
       JCCExchange.destroy();
       expect(spy.calledOnce).to.true;
       sandbox.restore();
+    });
+  });
+
+  describe("test setDefaultChain", () => {
+    after(() => {
+      JCCExchange.setDefaultChain("jingtum");
+    });
+    it("setDefaultChain should be a function", () => {
+      expect(typeof JCCExchange.setDefaultChain).to.equal("function");
+    });
+
+    it("need change default config of chain", () => {
+      let config = chainConfig.getDefaultConfig();
+      expect(config).to.deep.equal({ nativeToken: "SWT", minGas: 10 });
+      JCCExchange.setDefaultChain("bizain");
+      config = chainConfig.getDefaultConfig();
+      expect(config).to.deep.equal({ nativeToken: "BWT", minGas: 10 });
+      JCCExchange.setDefaultChain("seaaps");
+      config = chainConfig.getDefaultConfig();
+      expect(config).to.deep.equal({ nativeToken: "SEAA", minGas: 10000 });
     });
   });
 

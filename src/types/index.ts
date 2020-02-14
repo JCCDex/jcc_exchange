@@ -65,3 +65,10 @@ export interface IBrokerageExchange {
   Sequence?: number;
   TransactionType: string;
 }
+
+export type ISupportChain = "jingtum" | "bizain" | "seaaps";
+
+export interface IChainConfig {
+  nativeToken: string;
+  minGas: number;
+}
