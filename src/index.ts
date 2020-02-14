@@ -25,8 +25,8 @@
  */
 
 import * as jingtumSignTx from "jcc_jingtum_lib/src/local_sign";
-import { ExchangeType, IBrokerageExchange, ICancelExchange, ICreateExchange, IMemo, IPayExchange, ISupportChain } from "./types";
 import { serializeBrokerage, serializeCancelOrder, serializeCreateOrder, serializePayment } from "./tx";
+import { ExchangeType, IBrokerageExchange, ICancelExchange, ICreateExchange, IMemo, IPayExchange, ISupportChain } from "./types";
 import { exchangeInstance, swtcSequence } from "./util";
 import { chainConfig } from "./util/config";
 class JCCExchange {

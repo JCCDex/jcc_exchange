@@ -2,17 +2,17 @@ import { IChainConfig, ISupportChain } from "../types";
 
 export const chainConfig = (() => {
   const defaultConfigs = {
-    jingtum: {
-      nativeToken: "SWT",
-      minGas: 10
-    },
     bizain: {
-      nativeToken: "BWT",
-      minGas: 10
+      minGas: 10,
+      nativeToken: "BWT"
+    },
+    jingtum: {
+      minGas: 10,
+      nativeToken: "SWT"
     },
     seaaps: {
-      nativeToken: "SEAA",
-      minGas: 10000
+      minGas: 10000,
+      nativeToken: "SEAA"
     }
   };
 
