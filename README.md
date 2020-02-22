@@ -31,20 +31,19 @@ Breaking changes since v2.0.0, if you used v1.0.9 see [v1.0.9](https://github.co
 
 ```javascript
 
-const JCCExchange = require('jcc_exchange').JCCExchange;
-
-// set chain config
-
-// default support jingtum chain
-JCCExchange.setDefaultChain("jingtum");
-
-// support bizain chain
-JCCExchange.setDefaultChain("bizain");
-
-// support seaaps chain
-JCCExchange.setDefaultChain("seaaps");
-
 (async () => {
+    const JCCExchange = require('jcc_exchange').JCCExchange;
+    // set chain config
+
+    // default support jingtum chain
+    // JCCExchange.setDefaultChain("jingtum");
+
+    // support bizain chain
+    // JCCExchange.setDefaultChain("bizain");
+
+    // support seaaps chain
+    // JCCExchange.setDefaultChain("seaaps");
+
     // example urls
     const urls = ["http://localhost"];
 
