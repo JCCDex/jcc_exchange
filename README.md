@@ -31,16 +31,27 @@ Breaking changes since v2.0.0, if you used v1.0.9 see [v1.0.9](https://github.co
 
 ```javascript
 
-var JCCExchange = require('jcc_exchange').JCCExchange;
-async function main() {
-    // example
-    const hosts = ["localhost"];
-    const port = 80;
-    const https = false;
+const JCCExchange = require('jcc_exchange').JCCExchange;
+
+// set chain config
+
+// default support jingtum chain
+JCCExchange.setDefaultChain("jingtum");
+
+// support bizain chain
+JCCExchange.setDefaultChain("bizain");
+
+// support seaaps chain
+JCCExchange.setDefaultChain("seaaps");
+
+(async () => {
+    // example urls
+    const urls = ["http://localhost"];
+
     const retry = 3; // default value
 
-    // init value of hosts、port、https & retry
-    JCCExchange.init(hosts, port, https, retry);
+    // init value of urls & retry
+    JCCExchange.init(urls, retry);
 
     // create an order
     // buy 1 jcc with 1 swt
@@ -86,8 +97,6 @@ async function main() {
     } catch (error) {
         console.log(error);
     }
-}
-
-main();
+})();
 
 ```
