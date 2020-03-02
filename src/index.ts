@@ -24,11 +24,12 @@
  * @author https://github.com/GinMu
  */
 
-import * as jingtumSignTx from "jcc_jingtum_lib/src/local_sign";
 import { serializeBrokerage, serializeCancelOrder, serializeCreateOrder, serializePayment } from "./tx";
 import { ExchangeType, IBrokerageExchange, ICancelExchange, ICreateExchange, IMemo, IPayExchange, ISupportChain } from "./types";
 import { exchangeInstance, swtcSequence } from "./util";
 import { chainConfig } from "./util/config";
+import sign from "./util/sign";
+
 class JCCExchange {
   private static urls: string[];
   private static retry: number;
@@ -236,14 +237,13 @@ class JCCExchange {
   protected static async submit(secret: string, tx: ICancelExchange | ICreateExchange | IPayExchange | IBrokerageExchange, callback: (signature: string) => Promise<any>): Promise<string> {
     let hash;
     let retry = JCCExchange.retry;
-    const { nativeToken } = chainConfig.getDefaultConfig();
     while (!hash) {
       // copy transaction because signature action will change origin transaction
       const copyTx = Object.assign({}, tx);
       const sequence = await swtcSequence.get(JCCExchange.getSequence, tx.Account);
       copyTx.Sequence = sequence;
-      const sign = jingtumSignTx(copyTx, { seed: secret }, nativeToken);
-      const res = await callback(sign);
+      const signed = sign(copyTx, secret, chainConfig.getDefaultChain());
+      const res = await callback(signed);
       const engine_result = res.result.engine_result;
       if (engine_result === "tesSUCCESS") {
         hash = res.result.tx_json.hash;

@@ -36,7 +36,17 @@ export const chainConfig = (() => {
     defaultChain = chain;
   };
 
+  /**
+   * get default chain
+   *
+   * @returns {ISupportChain}
+   */
+  const getDefaultChain = (): ISupportChain => {
+    return defaultChain;
+  };
+
   return {
+    getDefaultChain,
     getDefaultConfig,
     setDefaultChain
   };

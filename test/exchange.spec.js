@@ -126,11 +126,11 @@ describe("test jc exchange", () => {
 
     it("local singature failed", async () => {
       const stub = sandbox.stub(JcNodeRpc.prototype, "getSequence");
-      stub.resolves(200);
+      stub.resolves("4");
       try {
-        await JCCExchange.createOrder(testAddress, "", "1", "jjcc", "cny", "1", "buy", testIssuer);
+        await JCCExchange.createOrder(testAddress, testSecret, "1", "jjcc", "cny", "1", "buy", testIssuer);
       } catch (error) {
-        expect(error.message).to.equal("Unknown datatype. (SigningPubKey)");
+        expect(error.message).to.equal("Value is not a number 4 (Sequence)");
       }
     });
 
@@ -260,7 +260,7 @@ describe("test jc exchange", () => {
       try {
         await JCCExchange.cancelOrder(testAddress, testSecret, 200);
       } catch (error) {
-        expect(error.message).to.equal("Value is not a number (Sequence)");
+        expect(error.message).to.equal("Value is not a number 4 (Sequence)");
       }
     });
 
@@ -397,7 +397,7 @@ describe("test jc exchange", () => {
       try {
         await JCCExchange.transfer(testAddress, testSecret, "1", "test", to, "swt");
       } catch (error) {
-        expect(error.message).to.equal("Value is not a number (Sequence)");
+        expect(error.message).to.equal("Value is not a number 4 (Sequence)");
       }
     });
 
@@ -530,8 +530,98 @@ describe("test jc exchange", () => {
       try {
         await JCCExchange.setBrokerage(platformAccount, platformSecret, feeAccount, 0, 1000, "XXX", testIssuer1);
       } catch (error) {
-        expect(error.message).to.equal("Value is not a number (Sequence)");
+        expect(error.message).to.equal("Value is not a number 4 (Sequence)");
       }
+    });
+  });
+
+  describe("test transfer when chain is bizain", () => {
+    const address = "bMAy4Pu8CSf5apR44HbYyLFKeC9Dbau16Q";
+    const secret = "ssySqG4BhxpngV2FjAe1SJYFD4dcm";
+    const to = "bPyxKVZUbKQHwkU41oGCGcFRKaVxpCxSDT";
+
+    before(() => {
+      JCCExchange.init([], 1);
+      JCCExchange.setDefaultChain("bizain");
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+      swtcSequence.clear();
+    });
+
+    after(() => {
+      JCCExchange.setDefaultChain("jingtum");
+    });
+
+    it("transfer account successfully", async () => {
+      const stub = sandbox.stub(JcNodeRpc.prototype, "getSequence");
+      stub.resolves(200);
+      const stub1 = sandbox.stub(JcNodeRpc.prototype, "transfer");
+      stub1.resolves({
+        result: {
+          engine_result: "tesSUCCESS",
+          tx_json: {
+            hash: "111111"
+          }
+        }
+      });
+      const hash = await JCCExchange.transfer(address, secret, "1", "test", to, "bwt");
+      expect(hash).to.equal("111111");
+      expect(stub.calledOnce).to.true;
+      expect(stub1.calledOnce).to.true;
+      expect(stub.calledOnceWithExactly(address)).to.true;
+      expect(
+        stub1.calledOnceWithExactly(
+          "120000220000000024000000C86140000000000F424068400000000000000A73210305907425BF03CD414D089EB48FE0AB7898B74985F43B0A42EB06588DA6FFC58E74473045022100D12B9A0CABA5F59C0E909B9C7F2175B829AB99215472BBE6E868B1B90D238C1B02205FFCFA113AB13EC16A955F4232D16EEA1031365D0D3445616588BF8CA3EB1D608114E5C8083009E1C466A7484CF57497009AB5A31AED8314FC183D2B2877F15407300CB0ACC6919529C0E1AEF9EA7C06737472696E677D0474657374E1F1"
+        )
+      ).to.true;
+      expect(await swtcSequence.get(null, address)).to.equal(201);
+    });
+  });
+
+  describe("test transfer when chain is seaaps", () => {
+    const address = "dNv89C8qjHP8hpTohc8knuSdtRnU4omH32";
+    const secret = "ssGaiHdMUpyKHsnGCrnijaZnjZ9Hh";
+    const to = "dKgJFijXjiutU3GYfur2ktGdNDo3eKckbP";
+
+    before(() => {
+      JCCExchange.init([], 1);
+      JCCExchange.setDefaultChain("seaaps");
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+      swtcSequence.clear();
+    });
+
+    after(() => {
+      JCCExchange.setDefaultChain("jingtum");
+    });
+
+    it("transfer account successfully", async () => {
+      const stub = sandbox.stub(JcNodeRpc.prototype, "getSequence");
+      stub.resolves(200);
+      const stub1 = sandbox.stub(JcNodeRpc.prototype, "transfer");
+      stub1.resolves({
+        result: {
+          engine_result: "tesSUCCESS",
+          tx_json: {
+            hash: "111111"
+          }
+        }
+      });
+      const hash = await JCCExchange.transfer(address, secret, "1", "test", to, "seaa");
+      expect(hash).to.equal("111111");
+      expect(stub.calledOnce).to.true;
+      expect(stub1.calledOnce).to.true;
+      expect(stub.calledOnceWithExactly(address)).to.true;
+      expect(
+        stub1.calledOnceWithExactly(
+          "120000220000000024000000C86140000000000F4240684000000000002710732102665FE69997715DCFD583E9DDD22BF0C7B3AF96D2595D137A8D7FF09400B7B4F17447304502210099901E6F3850BF400EA82FCF61796ED2593B1BFE444D6D1267C71EFA95CB28D702202212B601329B70CB63FE55C939E033DDCE29AE570EE84B6655714FF86E4EFEBE811498C55EBABC4504922BE7ECE40CB4733359B0F5F08314CCE15DC33BEFF06DAB79CEAC9562E517E59ADF0DF9EA7C06737472696E677D0474657374E1F1"
+        )
+      ).to.true;
+      expect(await swtcSequence.get(null, address)).to.equal(201);
     });
   });
 });
