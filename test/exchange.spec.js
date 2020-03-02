@@ -15,6 +15,9 @@ const platformSecret = "snJ7ufPZ3LGTfz6V7yLNWABYneLAL";
 const feeAccount = "j98XXLZUCqvP4x7rgFeeYekNgZCotffBH5";
 const testIssuer1 = "jPpTx4EXLUcXWrVbS98FX6TXea4EuQyyU6";
 
+const ed25519Secret = "sEd7qWKPgDpdSGPdPwDnYB6k7KJx1zs";
+const ed25519Address = "jwhzx39pNqwSwnij3F9haQv1Y56EzWvDWJ";
+
 const swtcSequence = require("../lib/util").swtcSequence;
 
 describe("test jc exchange", () => {
@@ -83,7 +86,7 @@ describe("test jc exchange", () => {
       swtcSequence.clear();
     });
 
-    it("create order successfully", async () => {
+    it("create order successfully when wallet's type is secp256k1", async () => {
       const stub = sandbox.stub(JcNodeRpc.prototype, "getSequence");
       stub.resolves(200);
       const stub1 = sandbox.stub(JcNodeRpc.prototype, "createOrder");
@@ -104,6 +107,29 @@ describe("test jc exchange", () => {
         )
       ).to.true;
       expect(await swtcSequence.get(null, testAddress)).to.equal(201);
+    });
+
+    it("create order successfully when wallet's type is ed25519", async () => {
+      const stub = sandbox.stub(JcNodeRpc.prototype, "getSequence");
+      stub.resolves(200);
+      const stub1 = sandbox.stub(JcNodeRpc.prototype, "createOrder");
+      stub1.resolves({
+        result: {
+          engine_result: "tesSUCCESS",
+          tx_json: {
+            hash: "111"
+          }
+        }
+      });
+      const hash = await JCCExchange.createOrder(ed25519Address, ed25519Secret, "1", "jjcc", "cny", "1", "buy");
+      expect(hash).to.equal("111");
+      expect(stub.calledOnceWithExactly(ed25519Address)).to.true;
+      expect(
+        stub1.calledOnceWithExactly(
+          "120007220000000024000000C864D4838D7EA4C6800000000000000000000000004A4A43430000000000A582E432BFC48EEDEF852C814EC57F3CD2D4159665D4838D7EA4C68000000000000000000000000000434E590000000000A582E432BFC48EEDEF852C814EC57F3CD2D4159668400000000000000A7321ED215352EE2DEC2816E3AC33785269762C1690ABAB037DC585461A33A748E090D2744053CD660981CD2C4CABB55644458A33B2A1DF1A9BB0BE5C4482DB36FA2AF5DBCF2E00B2791E8FC1E1713FAB7AF03904D0607D00B32D5A8EFFB2C81120E27521028114637AC1269B71499D3E752ECADD1D50FF0BEE27BE8D14896E3F7353697ECE52645D9C502F08BB2EDC5717"
+        )
+      ).to.true;
+      expect(await swtcSequence.get(null, ed25519Address)).to.equal(201);
     });
 
     it("if the type is wrong", async () => {
@@ -220,7 +246,7 @@ describe("test jc exchange", () => {
       swtcSequence.clear();
     });
 
-    it("cancel order successfully", async () => {
+    it("cancel order successfully when wallet's type is secp256k1", async () => {
       const stub = sandbox.stub(JcNodeRpc.prototype, "getSequence");
       stub.resolves(200);
       const stub1 = sandbox.stub(JcNodeRpc.prototype, "cancelOrder");
@@ -240,6 +266,26 @@ describe("test jc exchange", () => {
         stub1.calledOnceWithExactly("120008220000000024000000C82019000000C868400000000000000A732102C13075B18C87A032226CE383AEFD748D7BB719E02CD7F5A8C1F2C7562DE7C12A74473045022100C13F2C789E428CC41DC0579471EB826A1089A13DE9B85293D1879718AA03BAF102203E1A013FBEFD8F497DE5AB5890EBEA3E013BD71B38852D9B2A552EC2F3971CB781141270C5BE503A3A22B506457C0FEC97633B44F7DD")
       ).to.true;
       expect(await swtcSequence.get(null, testAddress)).to.equal(201);
+    });
+
+    it("cancel order successfully when wallet's type is ed25519", async () => {
+      const stub = sandbox.stub(JcNodeRpc.prototype, "getSequence");
+      stub.resolves(200);
+      const stub1 = sandbox.stub(JcNodeRpc.prototype, "cancelOrder");
+      stub1.resolves({
+        result: {
+          engine_result: "tesSUCCESS",
+          tx_json: {
+            hash: "1111"
+          }
+        }
+      });
+
+      const hash = await JCCExchange.cancelOrder(ed25519Address, ed25519Secret, 200);
+      expect(hash).to.equal("1111");
+      expect(stub.calledOnceWithExactly(ed25519Address)).to.true;
+      expect(stub1.calledOnceWithExactly("120008220000000024000000C82019000000C868400000000000000A7321ED215352EE2DEC2816E3AC33785269762C1690ABAB037DC585461A33A748E090D2744021E7277887D3EFABB59FF154BB26B959627BA0E1D58CBD22CD8A5725ADF14DBA56A28808E5C3401DFF1C7C20F19BD1B398C9F3C69AB8293A0A672EC1B7186A008114637AC1269B71499D3E752ECADD1D50FF0BEE27BE")).to.true;
+      expect(await swtcSequence.get(null, ed25519Address)).to.equal(201);
     });
 
     it("get sequence failed", async () => {
@@ -354,7 +400,7 @@ describe("test jc exchange", () => {
       swtcSequence.clear();
     });
 
-    it("transfer account successfully", async () => {
+    it("transfer account successfully when wallet's type is secp256k1", async () => {
       const stub = sandbox.stub(JcNodeRpc.prototype, "getSequence");
       stub.resolves(200);
       const stub1 = sandbox.stub(JcNodeRpc.prototype, "transfer");
@@ -377,6 +423,31 @@ describe("test jc exchange", () => {
         )
       ).to.true;
       expect(await swtcSequence.get(null, testAddress)).to.equal(201);
+    });
+
+    it("transfer account successfully when wallet's type is ed25519", async () => {
+      const stub = sandbox.stub(JcNodeRpc.prototype, "getSequence");
+      stub.resolves(200);
+      const stub1 = sandbox.stub(JcNodeRpc.prototype, "transfer");
+      stub1.resolves({
+        result: {
+          engine_result: "tesSUCCESS",
+          tx_json: {
+            hash: "111111"
+          }
+        }
+      });
+      const hash = await JCCExchange.transfer(ed25519Address, ed25519Secret, "1", "test", to, "swt");
+      expect(hash).to.equal("111111");
+      expect(stub.calledOnce).to.true;
+      expect(stub1.calledOnce).to.true;
+      expect(stub.calledOnceWithExactly(ed25519Address)).to.true;
+      expect(
+        stub1.calledOnceWithExactly(
+          "120000220000000024000000C86140000000000F424068400000000000000A7321ED215352EE2DEC2816E3AC33785269762C1690ABAB037DC585461A33A748E090D274407872A3711FCC8D68D3C5E93A89642A1A27EF15727050B0395B5A7929DB1E2C1995EEC56BD29EF7059140F4DFA7A0307EC872B93959EBA1E54254E7B9BBD5380F8114637AC1269B71499D3E752ECADD1D50FF0BEE27BE83149AB1585226C7771B968141D07AE1F524384B61EEF9EA7C06737472696E677D0474657374E1F1"
+        )
+      ).to.true;
+      expect(await swtcSequence.get(null, ed25519Address)).to.equal(201);
     });
 
     it("get sequence failed", async () => {
@@ -488,7 +559,7 @@ describe("test jc exchange", () => {
       swtcSequence.clear();
     });
 
-    it("set brokerage successfully", async () => {
+    it("set brokerage successfully when wallet's type is secp256k1", async () => {
       const stub = sandbox.stub(JcNodeRpc.prototype, "getSequence");
       stub.resolves(10);
       const stub1 = sandbox.stub(JcNodeRpc.prototype, "setBrokerage");
@@ -511,6 +582,31 @@ describe("test jc exchange", () => {
         )
       ).to.true;
       expect(await swtcSequence.get(null, platformAccount)).to.equal(11);
+    });
+
+    it("set brokerage successfully when wallet's type is ed25519", async () => {
+      const stub = sandbox.stub(JcNodeRpc.prototype, "getSequence");
+      stub.resolves(10);
+      const stub1 = sandbox.stub(JcNodeRpc.prototype, "setBrokerage");
+      stub1.resolves({
+        result: {
+          engine_result: "tesSUCCESS",
+          tx_json: {
+            hash: "95A3F55A7DD81695D511CF7F257A9B86FA9DF391B000517A38A8AE303A0CB200"
+          }
+        }
+      });
+      const hash = await JCCExchange.setBrokerage(ed25519Address, ed25519Secret, feeAccount, 15, 1000, "XXX");
+      expect(hash).to.equal("95A3F55A7DD81695D511CF7F257A9B86FA9DF391B000517A38A8AE303A0CB200");
+      expect(stub.calledOnce).to.true;
+      expect(stub1.calledOnce).to.true;
+      expect(stub.calledOnceWithExactly(ed25519Address)).to.true;
+      expect(
+        stub1.calledOnceWithExactly(
+          "1200CD240000000A39000000000000000F3A00000000000003E86180000000000000000000000000000000000000005858580000000000A582E432BFC48EEDEF852C814EC57F3CD2D4159668400000000000000A7321ED215352EE2DEC2816E3AC33785269762C1690ABAB037DC585461A33A748E090D27440124AC99FFB33372982D09FF8848E172EAC79BD2E63393CFA645BB06160CA661DBBD135BE0B439505974179E5DF60208B13E21E8838C98F9F0E12101420A0350C8114637AC1269B71499D3E752ECADD1D50FF0BEE27BE8914605D3433AC480BD784E51FC7B731258A04518D1F"
+        )
+      ).to.true;
+      expect(await swtcSequence.get(null, ed25519Address)).to.equal(11);
     });
 
     it("get sequence failed", async () => {

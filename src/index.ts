@@ -237,12 +237,13 @@ class JCCExchange {
   protected static async submit(secret: string, tx: ICancelExchange | ICreateExchange | IPayExchange | IBrokerageExchange, callback: (signature: string) => Promise<any>): Promise<string> {
     let hash;
     let retry = JCCExchange.retry;
+    const chain = chainConfig.getDefaultChain();
     while (!hash) {
       // copy transaction because signature action will change origin transaction
       const copyTx = Object.assign({}, tx);
       const sequence = await swtcSequence.get(JCCExchange.getSequence, tx.Account);
       copyTx.Sequence = sequence;
-      const signed = sign(copyTx, secret, chainConfig.getDefaultChain());
+      const signed = sign(copyTx, secret, chain);
       const res = await callback(signed);
       const engine_result = res.result.engine_result;
       if (engine_result === "tesSUCCESS") {
