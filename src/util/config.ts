@@ -1,4 +1,4 @@
-import { IChainConfig, ISupportChain } from "../types";
+/// <reference path = "../types/index.ts" />
 
 export const chainConfig = (() => {
   const defaultConfigs = {

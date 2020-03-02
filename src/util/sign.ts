@@ -1,6 +1,7 @@
+/// <reference path = "../types/index.ts" />
+
 import { Factory as SerializerFactory } from "@swtc/serializer";
 import { Factory as WalletFactory } from "@swtc/wallet";
-import { ISupportChain } from "../types";
 
 const createFactory = ((WalletFactory, SerializerFactory) => {
   let chain: ISupportChain;

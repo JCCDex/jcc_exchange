@@ -1,4 +1,5 @@
-import { ExchangeType, IAmount, IBrokerageExchange, ICancelExchange, ICreateExchange, IMemo, IPayExchange } from "../types";
+/// <reference path = "../types/index.ts" />
+
 import { chainConfig } from "../util/config";
 
 export const serializeCreateOrder = (address: string, amount: string, base: string, counter: string, sum: string, type: ExchangeType, platform: string, issuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"): ICreateExchange => {

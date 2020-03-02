@@ -10,22 +10,22 @@ interface ITakerPays {
   value: string;
 }
 
-export interface IAmount {
+declare interface IAmount {
   currency: string;
   issuer: string;
   value: string;
 }
 
-export type ExchangeType = "buy" | "sell";
+declare type ExchangeType = "buy" | "sell";
 
-export interface IMemo {
+declare interface IMemo {
   Memo: {
     MemoType: string;
     MemoData: string;
   };
 }
 
-export interface ICreateExchange {
+declare interface ICreateExchange {
   Account: string;
   Fee: number;
   Flags: number;
@@ -35,7 +35,7 @@ export interface ICreateExchange {
   TransactionType: string;
 }
 
-export interface ICancelExchange {
+declare interface ICancelExchange {
   Account: string;
   Fee: number;
   Flags: number;
@@ -44,7 +44,7 @@ export interface ICancelExchange {
   TransactionType: string;
 }
 
-export interface IPayExchange {
+declare interface IPayExchange {
   Account: string;
   Amount: string | IAmount;
   Destination: string;
@@ -55,7 +55,7 @@ export interface IPayExchange {
   Memos: IMemo[];
 }
 
-export interface IBrokerageExchange {
+declare interface IBrokerageExchange {
   Account: string;
   Amount: string | IAmount;
   Fee: number;
@@ -66,9 +66,9 @@ export interface IBrokerageExchange {
   TransactionType: string;
 }
 
-export type ISupportChain = "jingtum" | "bizain" | "seaaps";
+declare type ISupportChain = "jingtum" | "bizain" | "seaaps";
 
-export interface IChainConfig {
+declare interface IChainConfig {
   nativeToken: string;
   minGas: number;
 }

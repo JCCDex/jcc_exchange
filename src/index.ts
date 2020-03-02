@@ -23,9 +23,9 @@
 /**
  * @author https://github.com/GinMu
  */
+/// <reference path = "./types/index.ts" />
 
 import { serializeBrokerage, serializeCancelOrder, serializeCreateOrder, serializePayment } from "./tx";
-import { ExchangeType, IBrokerageExchange, ICancelExchange, ICreateExchange, IMemo, IPayExchange, ISupportChain } from "./types";
 import { exchangeInstance, swtcSequence } from "./util";
 import { chainConfig } from "./util/config";
 import sign from "./util/sign";
