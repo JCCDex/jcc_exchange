@@ -3,17 +3,17 @@
 import { Factory as SerializerFactory } from "@swtc/serializer";
 import { Factory as WalletFactory } from "@swtc/wallet";
 
-const createFactory = ((WalletFactory, SerializerFactory) => {
+const createFactory = ((walletFactory, serializerFactory) => {
   let chain: ISupportChain;
-  let Wallet;
-  let Serializer;
+  let wallet;
+  let serializer;
   return (name: ISupportChain) => {
     if (name !== chain) {
-      Wallet = WalletFactory(name);
-      Serializer = SerializerFactory(Wallet);
+      wallet = walletFactory(name);
+      serializer = serializerFactory(wallet);
       chain = name;
     }
-    return { Wallet, Serializer };
+    return { Wallet: wallet, Serializer: serializer };
   };
 })(WalletFactory, SerializerFactory);
 

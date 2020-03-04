@@ -1,20 +1,11 @@
 import assert = require("assert");
-import { JcNodeRpc } from "jcc_rpc";
+import { JcNodeRpc, NodeRpcFactory } from "jcc_rpc";
 
-export const exchangeInstance = (() => {
-  let inst: JcNodeRpc = null;
-
-  /**
-   * init instance of jc exchange
-   *
-   * @param {string[]} hosts
-   * @param {number} port
-   * @param {boolean} https
-   * @returns {JcNodeRpc}
-   */
-  const init = (urls: string[]): JcNodeRpc => {
+export const exchangeInstance = {
+  init: (urls: string[]): JcNodeRpc => {
+    let inst = NodeRpcFactory.get();
     if (inst === null) {
-      inst = new JcNodeRpc(urls);
+      inst = NodeRpcFactory.init(urls);
     } else {
       try {
         assert.deepStrictEqual(inst.urls, urls);
@@ -22,23 +13,12 @@ export const exchangeInstance = (() => {
         inst.urls = urls;
       }
     }
-
     return inst;
-  };
-
-  /**
-   * destroy instance of jc exchange
-   *
-   */
-  const destroy = () => {
-    inst = null;
-  };
-
-  return {
-    destroy,
-    init
-  };
-})();
+  },
+  destroy: () => {
+    NodeRpcFactory.destroy();
+  }
+};
 
 export const swtcSequence = (() => {
   // sequence cache for address

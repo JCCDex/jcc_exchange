@@ -4,9 +4,7 @@ const expect = chai.expect;
 const JcNodeRpc = require("jcc_rpc").JcNodeRpc;
 
 describe("test exchangeInstance", function() {
-  const hosts = ["localhost"];
-  const port = 80;
-  const https = false;
+  const urls = ["http://localhost"];
 
   describe("test destroy", function() {
     it("destroy should be a function", function() {
@@ -20,27 +18,27 @@ describe("test exchangeInstance", function() {
     });
 
     it("should return instance of JcNodeRpc", function() {
-      const inst = exchangeInstance.init(hosts, port, https);
+      const inst = exchangeInstance.init(urls);
       expect(inst instanceof JcNodeRpc).to.true;
     });
 
-    it("should init once if inst isn't null and host、port & https is not changed", function() {
-      const inst = exchangeInstance.init(hosts, port, https);
+    it("should init once if inst isn't null", function() {
+      const inst = exchangeInstance.init(urls);
       expect(inst instanceof JcNodeRpc).to.true;
 
-      const inst2 = exchangeInstance.init(hosts, port, https);
+      const inst2 = exchangeInstance.init(urls);
       expect(inst).to.equal(inst2);
     });
 
     it("should init twice if inst is destroyed", function() {
-      const inst = exchangeInstance.init(hosts, port, https);
+      const inst = exchangeInstance.init(urls);
       expect(inst instanceof JcNodeRpc).to.true;
       exchangeInstance.destroy();
-      const inst2 = exchangeInstance.init(hosts, port, https);
+      const inst2 = exchangeInstance.init(urls);
       expect(inst).to.not.equal(inst2);
     });
 
-    it("should init twice if hosts is changed", function() {
+    it("should init once and urls should be changed if urls is changed", function() {
       const inst = exchangeInstance.init(["http://localhost:80"]);
       expect(inst instanceof JcNodeRpc).to.true;
       expect(inst.urls).to.deep.equal(["http://localhost:80"]);
