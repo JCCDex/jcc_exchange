@@ -1,11 +1,15 @@
 language: node_js
 node_js:
-- 11
-- 10
-- 9
-- 8
+  - 12
+  - 11
+  - 10
+  - 9
+  - 8
+script:
+  - npm run tslint
+  - npm run test
 after_success:
-- npm run coveralls
+  - npm run coveralls
 env:
   global:
     secure: "vZSESNzEsuM90RVAPujYtIoSnAQx7d3uvtHb6OrbnGJMxa6vu5dbn9d8JFU9XIoxju/cNooURbd4mq6e+MRgOXG83du5z+yz4lFEGH0a8JXgYs1Vjiwgriypvm4Qawy7mw8S1oH4fh/OXiQ281NDimvt3qspo6MR8ATmqi2qA0W8wOhFz+hFY44+/w09ulnfnPUjzwul9WSY6Xqpz819M/mpMPHq8Fad7CIxMsPsJz57SQXx/Q4DrdGA2GUIpyRPjha1uZGl87+oTkFa+xrx73Hkb/dkDbL8y9AJ8Jt4U7foE4PlskogTLjGpYFAy/Wsut3NqBXmOdGJ3Q8F1nj++5b3CEDtgtMdEXzgDCTwjjbWaLtq/0u1rlUXLv/97h3n0DfQA2+M0t0xurTXjx9BwBfYctfrpv9xbwWrNoONXOj5lDQAja/18f1l0wuQY4910UTJ7aTccLPysfVXpPg3jEiWjRRJemYCKdSc8HPWuXeAgkcDlBHy28iM4pXo6EaLBZwYBtqYiZcE7iwBHSU7x/fjxeFrA+daPyzoE2F15GEWbewjNAqX5I3q7KnCoNNnI4ZNATDUSy874IlclHmyDyqbw2hgJePAog2Yr3DUqdAA2kjDJ2GwGsNw8UTUR6D7oCRwNVf9obpK0G5fqByiP+f35Qi6pjgQ7gpBAqhGwEg="
