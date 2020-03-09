@@ -8,13 +8,13 @@
     "lib"
   ],
   "dependencies": {
-    "@swtc/serializer": "^1.0.8",
+    "@swtc/serializer": "^1.0.9",
     "@swtc/wallet": "^1.0.11",
     "@types/node": "^13.7.7",
     "jcc_rpc": "^0.2.4"
   },
   "devDependencies": {
-    "acorn": "^7.1.0",
+    "acorn": "^7.1.1",
     "babelify": "^10.0.0",
     "browserify": "^16.5.0",
     "chai": "^4.2.0",
