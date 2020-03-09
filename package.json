@@ -1,6 +1,6 @@
 {
   "name": "jcc_exchange",
-  "version": "3.0.9",
+  "version": "3.1.0",
   "description": "api of jcc exchange",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
