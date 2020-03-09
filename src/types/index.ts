@@ -29,6 +29,7 @@ declare interface ICreateExchange {
   Account: string;
   Fee: number;
   Flags: number;
+  Platform: string;
   Sequence?: number;
   TakerGets: string | ITakerGets;
   TakerPays: string | ITakerPays;
