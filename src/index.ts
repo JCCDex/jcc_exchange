@@ -25,7 +25,7 @@
  */
 /// <reference path = "./types/index.ts" />
 
-import { serializeBrokerage, serializeCancelOrder, serializeCreateOrder, serializePayment } from "./tx";
+import { serializeSetAccount, serializeSignerList, serializeBrokerage, serializeCancelOrder, serializeCreateOrder, serializePayment } from "./tx";
 import { exchangeInstance, swtcSequence } from "./util";
 import { chainConfig } from "./util/config";
 import sign from "./util/sign";
@@ -224,17 +224,69 @@ class JCCExchange {
   }
 
   /**
+   * enable/disable multi-sign account, signerQuorum is zero means disable
+   *
+   * @static
+   * @param {string} address multi-sign jingtum wallet
+   * @param {string} secret secret of your jingtum wallet
+   * @param {number} signerQuorum threshold of voting
+   * @param {ISignerEntry[]} signerEntries list of signer account and weight
+   * @returns {Promise<string>} resolve hash if transfer success
+   * @memberof JCCExchange
+   */
+  public static setSignerList(address: string, secret: string, signerQuorum: number, signerEntries?: ISignerEntry[]): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const tx = serializeSignerList(address, signerQuorum, signerEntries);
+        const inst = exchangeInstance.init(JCCExchange.urls);
+        const hash = await JCCExchange.submit(secret, tx, inst.setSignerList.bind(inst));
+        swtcSequence.rise(address);
+        return resolve(hash);
+      } catch (error) {
+        swtcSequence.reset(address);
+        return reject(error);
+      }
+    });
+  }
+
+  /**
+   * enable/disable account master key
+   *
+   * @static
+   * @param {string} address multi-sign jingtum wallet
+   * @param {string} secret secret of your jingtum wallet
+   * @param {number} signerQuorum threshold of voting
+   * @param {ISignerEntry[]} signerEntries list of signer account and weight
+   * @returns {Promise<string>} resolve hash if transfer success
+   * @memberof JCCExchange
+   */
+  public static setAccount(address: string, secret: string, disable: boolean): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const tx = serializeSetAccount(address, disable);
+        const inst = exchangeInstance.init(JCCExchange.urls);
+        const hash = await JCCExchange.submit(secret, tx, inst.setAccount.bind(inst));
+        swtcSequence.rise(address);
+        return resolve(hash);
+      } catch (error) {
+        swtcSequence.reset(address);
+        return reject(error);
+      }
+    });
+  }
+
+  /**
    * submit transaction
    *
    * @protected
    * @static
    * @param {string} secret
-   * @param {(ICancelExchange | ICreateExchange | IPayExchange) | IBrokerageExchange} tx
+   * @param {(ICancelExchange | ICreateExchange | IPayExchange) | IBrokerageExchange | ISignerListSet | IAccountSet} tx
    * @param {(signature: string) => Promise<any>} callback
    * @returns {Promise<string>}
    * @memberof JCCExchange
    */
-  protected static async submit(secret: string, tx: ICancelExchange | ICreateExchange | IPayExchange | IBrokerageExchange, callback: (signature: string) => Promise<any>): Promise<string> {
+  protected static async submit(secret: string, tx: ICancelExchange | ICreateExchange | IPayExchange | IBrokerageExchange | ISignerListSet | IAccountSet, callback: (signature: string) => Promise<any>): Promise<string> {
     let hash;
     let retry = JCCExchange.retry;
     const chain = chainConfig.getDefaultChain();

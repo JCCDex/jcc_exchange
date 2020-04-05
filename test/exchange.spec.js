@@ -18,6 +18,33 @@ const testIssuer1 = "jPpTx4EXLUcXWrVbS98FX6TXea4EuQyyU6";
 const ed25519Secret = "sEd7qWKPgDpdSGPdPwDnYB6k7KJx1zs";
 const ed25519Address = "jwhzx39pNqwSwnij3F9haQv1Y56EzWvDWJ";
 
+const multiSignAddress1 = "jhX4p7P6B5u3NummfT243QxbCGaDsZtHF4";
+// const multiSignSecret1 = "spogi3d9UdoUC3Yq5Nyn9Pd7WMkW6";
+const multiSignAddress2 = "jEvBVzUXM9Lg4CbuXZ3MeSRYdrKtXZi4c";
+// const multiSignSecret2 = "ssEpQ3zoWjm5bCzz5L3FfEMbhdNYE";
+const multiSignAddress3 = "jqqznoU8kkAaF3tCnsLPQ8AZwDQ2cexgh";
+// const multiSignSecret3 = "shX7ytb9bsVBwevyDdXBKVMvErGto";
+
+const signEntries = [
+  {
+    SignerEntry: {
+      Account: multiSignAddress1,
+      SignerWeight: 1
+    }
+  },
+  {
+    SignerEntry: {
+      Account: multiSignAddress2,
+      SignerWeight: 1
+    }
+  },
+  {
+    SignerEntry: {
+      Account: multiSignAddress3,
+      SignerWeight: 1
+    }
+  }
+];
 const swtcSequence = require("../lib/util").swtcSequence;
 
 describe("test jc exchange", () => {
@@ -150,7 +177,7 @@ describe("test jc exchange", () => {
       }
     });
 
-    it("local singature failed", async () => {
+    it("local signature failed", async () => {
       const stub = sandbox.stub(JcNodeRpc.prototype, "getSequence");
       stub.resolves("4");
       try {
@@ -628,6 +655,76 @@ describe("test jc exchange", () => {
       } catch (error) {
         expect(error.message).to.equal("Value is not a number 4 (Sequence)");
       }
+    });
+  });
+
+  describe("test setSignerList", () => {
+    before(() => {
+      JCCExchange.init([], 1);
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+      swtcSequence.clear();
+    });
+
+    it("set signer list successfully when wallet's type is secp256k1", async () => {
+      const stub = sandbox.stub(JcNodeRpc.prototype, "getSequence");
+      stub.resolves(10);
+      const stub1 = sandbox.stub(JcNodeRpc.prototype, "setSignerList");
+      stub1.resolves({
+        result: {
+          engine_result: "tesSUCCESS",
+          tx_json: {
+            hash: "95A3F55A7DD81695D511CF7F257A9B86FA9DF391B000517A38A8AE303A0CB200"
+          }
+        }
+      });
+
+      const hash = await JCCExchange.setSignerList(platformAccount, platformSecret, 2, signEntries);
+      expect(hash).to.equal("95A3F55A7DD81695D511CF7F257A9B86FA9DF391B000517A38A8AE303A0CB200");
+      expect(stub.calledOnce).to.true;
+      expect(stub1.calledOnce).to.true;
+      expect(stub.calledOnceWithExactly(platformAccount)).to.true;
+      expect(
+        stub1.calledOnceWithExactly(
+          "1200CF240000000A20260000000268400000000000000A732103EF0740D1367F37C9491063BEA541E04D18C8054CDD6DAD0BB2FBF9143810D04574473045022100CD50A9D7D9386F9064F12FCE669B75B3C631E1079321864685849FA7EF3BA00F02205A8BB71B1379F0F0DF6CDF00971040C38F2C55C55F8EA53E8E7C1A25BB7C56148114BF40A5DC91EF5047D81C041839104965F3DC2369FBEC130001811426A668459250D62BF47C5B70F4D7AE9D530B131BE1EC130001811402D2377D299513820E655D42689C8BAAD8675143E1EC1300018114093CDB299FE29E3666B6D1D4287C3A775BB394F2E1F1"
+        )
+      ).to.true;
+      expect(await swtcSequence.get(null, platformAccount)).to.equal(11);
+    });
+  });
+
+  describe("test setAccount", () => {
+    before(() => {
+      JCCExchange.init([], 1);
+    });
+
+    afterEach(() => {
+      sandbox.restore();
+      swtcSequence.clear();
+    });
+
+    it("set account successfully when wallet's type is secp256k1", async () => {
+      const stub = sandbox.stub(JcNodeRpc.prototype, "getSequence");
+      stub.resolves(10);
+      const stub1 = sandbox.stub(JcNodeRpc.prototype, "setAccount");
+      stub1.resolves({
+        result: {
+          engine_result: "tesSUCCESS",
+          tx_json: {
+            hash: "95A3F55A7DD81695D511CF7F257A9B86FA9DF391B000517A38A8AE303A0CB200"
+          }
+        }
+      });
+
+      const hash = await JCCExchange.setAccount(platformAccount, platformSecret, true);
+      expect(hash).to.equal("95A3F55A7DD81695D511CF7F257A9B86FA9DF391B000517A38A8AE303A0CB200");
+      expect(stub.calledOnce).to.true;
+      expect(stub1.calledOnce).to.true;
+      expect(stub.calledOnceWithExactly(platformAccount)).to.true;
+      expect(stub1.calledOnceWithExactly("120003240000000A20210000000468400000000000000A732103EF0740D1367F37C9491063BEA541E04D18C8054CDD6DAD0BB2FBF9143810D04574473045022100B1651973CB5806E4071BEFF51E585AA21833CEDCC48BC8E4C140AFCDDE6EE0E302202392AE7D961D103CA2BEBACF1051D280B7EA419BA261FDE8D310ADB1F715D7878114BF40A5DC91EF5047D81C041839104965F3DC2369")).to.true;
+      expect(await swtcSequence.get(null, platformAccount)).to.equal(11);
     });
   });
 

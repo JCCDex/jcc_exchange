@@ -143,3 +143,44 @@ export const serializeBrokerage = (platformAccount: string, feeAccount: string, 
 
   return tx;
 };
+
+export const serializeSignerList = (account: string, signerQuorum: number, signerEntries?: ISignerEntry[]): ISignerListSet => {
+  const { minGas } = chainConfig.getDefaultConfig();
+
+  const tx = signerQuorum
+    ? {
+        Account: account,
+        SignerQuorum: signerQuorum,
+        SignerEntries: signerEntries,
+        Fee: minGas / 1000000,
+        TransactionType: "SignerListSet"
+      }
+    : {
+        Account: account,
+        SignerQuorum: 0,
+        Fee: minGas / 1000000,
+        TransactionType: "SignerListSet"
+      };
+
+  return tx;
+};
+
+export const serializeSetAccount = (account: string, disable: boolean): IAccountSet => {
+  const { minGas } = chainConfig.getDefaultConfig();
+
+  const tx = disable
+    ? {
+        Account: account,
+        SetFlag: 4,
+        Fee: minGas / 1000000,
+        TransactionType: "AccountSet"
+      }
+    : {
+        Account: account,
+        ClearFlag: 4,
+        Fee: minGas / 1000000,
+        TransactionType: "AccountSet"
+      };
+
+  return tx;
+};

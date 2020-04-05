@@ -25,6 +25,13 @@ declare interface IMemo {
   };
 }
 
+declare interface ISignerEntry {
+  SignerEntry: {
+    Account: string;
+    SignerWeight: number;
+  };
+}
+
 declare interface ICreateExchange {
   Account: string;
   Fee: number;
@@ -54,6 +61,24 @@ declare interface IPayExchange {
   Sequence?: number;
   TransactionType: string;
   Memos: IMemo[];
+}
+
+declare interface ISignerListSet {
+  Account: string;
+  SignerQuorum: number;
+  SignerEntries?: ISignerEntry[];
+  Fee: number;
+  Sequence?: number;
+  TransactionType: string;
+}
+
+declare interface IAccountSet {
+  Account: string;
+  SetFlag?: number;
+  ClearFlag?: number;
+  Fee: number;
+  Sequence?: number;
+  TransactionType: string;
 }
 
 declare interface IBrokerageExchange {
