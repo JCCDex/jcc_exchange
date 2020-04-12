@@ -341,4 +341,4 @@ class JCCExchange {
 }
 
 export default JCCExchange;
-export { JCCExchange, Tx, sign, swtcSequence };
+export { JCCExchange, Tx, sign, exchangeInstance, swtcSequence };
