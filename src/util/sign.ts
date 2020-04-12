@@ -33,7 +33,7 @@ const sign = (tx: any, secret: string, chain: ISupportChain = "jingtum", returnH
   copyTx.TxnSignature = wallet.signTx(hash);
   const sendBlob = Serializer.from_json(copyTx);
   if (returnHash) {
-    return { blob: sendBlob.to_hex(), hash: sendBlob.hash(0x54584e00) };
+    return { blob: sendBlob.to_hex(), hash: sendBlob.hash(0x54584e00), tx: copyTx };
   } else {
     return sendBlob.to_hex();
   }
