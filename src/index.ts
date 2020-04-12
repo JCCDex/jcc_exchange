@@ -30,6 +30,8 @@ import { exchangeInstance, swtcSequence } from "./util";
 import { chainConfig } from "./util/config";
 import sign from "./util/sign";
 
+import * as Tx from "./tx";
+
 class JCCExchange {
   private static urls: string[];
   private static retry: number;
@@ -339,4 +341,4 @@ class JCCExchange {
 }
 
 export default JCCExchange;
-export { JCCExchange };
+export { JCCExchange, Tx, sign };
