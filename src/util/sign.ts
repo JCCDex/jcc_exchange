@@ -17,7 +17,7 @@ const createFactory = ((walletFactory, serializerFactory) => {
   };
 })(WalletFactory, SerializerFactory);
 
-const sign = (tx: any, secret: string, chain: ISupportChain = "jingtum"): string => {
+const sign = (tx: any, secret: string, chain: ISupportChain = "jingtum", returnHash: boolean = false): any => {
   const { Wallet, Serializer } = createFactory(chain);
   const wallet = new Wallet(secret);
   const copyTx = Object.assign({}, tx);
@@ -31,7 +31,12 @@ const sign = (tx: any, secret: string, chain: ISupportChain = "jingtum"): string
     hash = blob.hash(prefix);
   }
   copyTx.TxnSignature = wallet.signTx(hash);
-  return Serializer.from_json(copyTx).to_hex();
+  const sendBlob = Serializer.from_json(copyTx);
+  if (returnHash) {
+    return { blob: sendBlob.to_hex(), hash: sendBlob.hash(0x54584e00) };
+  } else {
+    return sendBlob.to_hex();
+  }
 };
 
 export default sign;

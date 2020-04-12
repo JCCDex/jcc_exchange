@@ -276,6 +276,29 @@ class JCCExchange {
   }
 
   /**
+   * send raw transaction
+   *
+   * @protected
+   * @static
+   * @param {string} blob
+   * @param {(signature: string) => Promise<any>} callback
+   * @returns {Promise<string>}
+   * @memberof JCCExchange
+   */
+  public static async sendRawTransaction(blob: string, callback: (signature: string) => Promise<any>): Promise<string> {
+    let hash;
+    while (!hash) {
+      const res = await callback(blob);
+      const engine_result = res.result.engine_result;
+      if (engine_result === "tesSUCCESS") {
+        hash = res.result.tx_json.hash;
+      } else {
+        throw new Error(res.result.engine_result_message || res.result.error_exception);
+      }
+    }
+    return hash;
+  }
+  /**
    * submit transaction
    *
    * @protected
