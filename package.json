@@ -11,7 +11,7 @@
     "@swtc/serializer": "^1.0.9",
     "@swtc/wallet": "^1.0.11",
     "@types/node": "^13.7.7",
-    "jcc_rpc": "^0.2.6"
+    "jcc_rpc": "^0.2.7"
   },
   "devDependencies": {
     "acorn": "^7.1.1",
