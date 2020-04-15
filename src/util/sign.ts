@@ -39,4 +39,29 @@ const sign = (tx: any, secret: string, chain: ISupportChain = "jingtum", returnH
   }
 };
 
+const multiSign = (tx: any, secret: string, chain: ISupportChain = "jingtum"): any => {
+  const { Wallet, Serializer } = createFactory(chain);
+  const wallet = new Wallet(secret);
+  const copyTx = Object.assign({}, tx);
+  copyTx.SigningPubKey = wallet.getPublicKey();
+  const prefix = 0x534d5400;
+  let blob = Serializer.from_json(copyTx);
+  blob = Serializer.adr_json(blob, wallet.address());
+
+  let hash: string;
+  if (wallet.isEd25519()) {
+    hash = `${prefix.toString(16).toUpperCase()}${blob.to_hex()}`;
+  } else {
+    hash = blob.hash(prefix);
+  }
+  return {
+    Signer: {
+      Account: wallet.address(),
+      SigningPubKey: wallet.getPublicKey(),
+      TxnSignature: wallet.signTx(hash)
+    }
+  };
+};
+
 export default sign;
+export { sign, multiSign };

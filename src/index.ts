@@ -28,7 +28,7 @@
 import { serializeSetAccount, serializeSignerList, serializeBrokerage, serializeCancelOrder, serializeCreateOrder, serializePayment } from "./tx";
 import { exchangeInstance, swtcSequence } from "./util";
 import { chainConfig } from "./util/config";
-import sign from "./util/sign";
+import { sign, multiSign } from "./util/sign";
 
 import * as Tx from "./tx";
 
@@ -341,4 +341,4 @@ class JCCExchange {
 }
 
 export default JCCExchange;
-export { JCCExchange, Tx, sign, exchangeInstance, swtcSequence };
+export { JCCExchange, Tx, sign, multiSign, exchangeInstance, swtcSequence };
