@@ -2,6 +2,7 @@
 
 import { Factory as SerializerFactory } from "@swtc/serializer";
 import { Factory as WalletFactory } from "@swtc/wallet";
+import { HASHPREFIX, tx_json_filter, normalize_memo } from "@swtc/common";
 
 const createFactory = ((walletFactory, serializerFactory) => {
   let chain: ISupportChain;
@@ -22,7 +23,7 @@ const sign = (tx: any, secret: string, chain: ISupportChain = "jingtum", returnH
   const wallet = new Wallet(secret);
   const copyTx = Object.assign({}, tx);
   copyTx.SigningPubKey = wallet.getPublicKey();
-  const prefix = 0x53545800;
+  const prefix = HASHPREFIX.transactionSig;
   const blob = Serializer.from_json(copyTx);
   let hash: string;
   if (wallet.isEd25519()) {
@@ -33,7 +34,7 @@ const sign = (tx: any, secret: string, chain: ISupportChain = "jingtum", returnH
   copyTx.TxnSignature = wallet.signTx(hash);
   const sendBlob = Serializer.from_json(copyTx);
   if (returnHash) {
-    return { blob: sendBlob.to_hex(), hash: sendBlob.hash(0x54584e00), account: wallet.address(), tx: copyTx };
+    return { blob: sendBlob.to_hex(), hash: sendBlob.hash(HASHPREFIX.transactionID), account: wallet.address(), tx: copyTx };
   } else {
     return sendBlob.to_hex();
   }
@@ -43,11 +44,16 @@ const multiSign = (tx: any, secret: string, chain: ISupportChain = "jingtum"): a
   const { Wallet, Serializer } = createFactory(chain);
   const wallet = new Wallet(secret);
   const copyTx = Object.assign({}, tx);
-  copyTx.SigningPubKey = wallet.getPublicKey();
-  const prefix = 0x534d5400;
+  // 多签的时候SigningPubKey必须有但是保持为空
+  copyTx.SigningPubKey = "";
+  // Fee按照笔数计算，考虑最大8笔，最高是0.01
+  copyTx.Fee = 8 * 10000;
+  tx_json_filter(copyTx);
+  normalize_memo(copyTx, true);
   let blob = Serializer.from_json(copyTx);
   blob = Serializer.adr_json(blob, wallet.address());
 
+  const prefix = HASHPREFIX.transactionMultiSig;
   let hash: string;
   if (wallet.isEd25519()) {
     hash = `${prefix.toString(16).toUpperCase()}${blob.to_hex()}`;
