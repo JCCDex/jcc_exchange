@@ -2,7 +2,7 @@
 
 import { Factory as SerializerFactory } from "@swtc/serializer";
 import { Factory as WalletFactory } from "@swtc/wallet";
-import { HASHPREFIX, tx_json_filter, convertStringToHex, normalize_memo } from "@swtc/common";
+import { HASHPREFIX } from "@swtc/common";
 
 const createFactory = ((walletFactory, serializerFactory) => {
   let chain: ISupportChain;
@@ -47,15 +47,8 @@ const multiSign = (tx: any, secret: string, chain: ISupportChain = "jingtum"): a
   // 多签的时候SigningPubKey必须有但是保持为空
   copyTx.SigningPubKey = "";
   // Fee按照笔数计算，考虑最大8笔，最高是0.01
-  copyTx.Fee = 8 * 10000;
-  tx_json_filter(copyTx);
-  normalize_memo(copyTx, true);
-  // swtc lib 兼容处理
-  for (const memo of tx.Memos) {
-    if (memo.Memo.MemoType) {
-      memo.Memo.MemoType = convertStringToHex(memo.Memo.MemoType);
-    }
-  }
+  copyTx.Fee = 0.08;
+
   let blob = Serializer.from_json(copyTx);
   blob = Serializer.adr_json(blob, wallet.address());
 
