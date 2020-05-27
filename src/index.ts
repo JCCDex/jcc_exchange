@@ -327,12 +327,12 @@ class JCCExchange {
         hash = res.result.tx_json.hash;
       } else {
         if (engine_result !== "terPRE_SEQ" && engine_result !== "tefPAST_SEQ") {
-          throw new Error(res.result.engine_result_message || res.result.error_exception);
+          throw new Error(res.result.engine_result_message || res.result.error_exception || res.result.error_message);
         }
         retry = retry - 1;
         swtcSequence.reset(tx.Account);
         if (retry < 0) {
-          throw new Error(res.result.engine_result_message || res.result.error_exception);
+          throw new Error(res.result.engine_result_message || res.result.error_exception || res.result.error_message);
         }
       }
     }
