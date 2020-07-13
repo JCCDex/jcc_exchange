@@ -98,3 +98,8 @@ declare interface IChainConfig {
   nativeToken: string;
   minGas: number;
 }
+
+declare interface IToken {
+  name: string;
+  issuer: string;
+}

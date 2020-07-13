@@ -2,53 +2,71 @@
 
 import { chainConfig } from "../util/config";
 
-export const serializeCreateOrder = (address: string, amount: string, base: string, counter: string, sum: string, type: ExchangeType, platform: string, issuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"): ICreateExchange => {
+export const serializeCreateOrder = (address: string, amount: string, base: string | IToken, counter: string | IToken, sum: string, type: ExchangeType, platform: string, issuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"): ICreateExchange => {
   const account = address;
   const { minGas, nativeToken } = chainConfig.getDefaultConfig();
   const fee = minGas / 1000000;
   let takerGets;
   let takerPays;
   let flags;
+  let baseName: string;
+  let baseIssuer: string;
+  let counterName: string;
+  let counterIssuer: string;
+  if (typeof base === "object") {
+    baseName = base.name;
+    baseIssuer = base.issuer || issuer;
+  } else {
+    baseName = base;
+    baseIssuer = issuer;
+  }
+  if (typeof counter === "object") {
+    counterName = counter.name;
+    counterIssuer = counter.issuer || issuer;
+  } else {
+    counterName = counter;
+    counterIssuer = issuer;
+  }
   if (type === "buy") {
     flags = 0;
-    if (base.toUpperCase() === nativeToken) {
+    if (baseName.toUpperCase() === nativeToken) {
       takerPays = amount;
     } else {
       takerPays = {
-        currency: base.toUpperCase(),
-        issuer,
+        currency: baseName.toUpperCase(),
+        issuer: baseIssuer,
         value: amount
       };
     }
 
-    if (counter.toUpperCase() === nativeToken) {
+    if (counterName.toUpperCase() === nativeToken) {
       takerGets = sum;
     } else {
       takerGets = {
-        currency: counter.toUpperCase(),
-        issuer,
+        currency: counterName.toUpperCase(),
+        issuer: counterIssuer,
         value: sum
       };
     }
   } else if (type === "sell") {
     flags = 0x00080000;
 
-    if (counter.toUpperCase() === nativeToken) {
+    if (counterName.toUpperCase() === nativeToken) {
       takerPays = sum;
     } else {
       takerPays = {
-        currency: counter.toUpperCase(),
-        issuer,
+        currency: counterName.toUpperCase(),
+        issuer: counterIssuer,
         value: sum
       };
     }
 
-    if (base.toUpperCase() === nativeToken) {
+    if (baseName.toUpperCase() === nativeToken) {
       takerGets = amount;
     } else {
       takerGets = {
-        currency: base.toUpperCase(),
-        issuer,
+        currency: baseName.toUpperCase(),
+        issuer: baseIssuer,
         value: amount
       };
     }
