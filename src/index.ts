@@ -31,6 +31,7 @@ import { chainConfig } from "./util/config";
 import { sign, multiSign } from "./util/sign";
 
 import * as Tx from "./tx";
+const delay = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 
 class JCCExchange {
   private static urls: string[];
@@ -73,7 +74,7 @@ class JCCExchange {
       throw new Error("arguments does not match");
     }
     JCCExchange.urls = urls;
-    JCCExchange.retry = retry || 3;
+    JCCExchange.retry = JCCExchange.urls.length > 0 ? JCCExchange.urls.length : retry || 3;
   }
 
   /**
@@ -143,6 +144,41 @@ class JCCExchange {
   }
 
   /**
+   * create order and check
+   *
+   * @static
+   * @param {string} address address of your jingtum wallet
+   * @param {string} secret secret of your jingtum wallet
+   * @param {string} amount amount of order
+   * @param {string} base token name, if the transaction pair is jjcc-swt, the value of base is "jjcc"
+   * @param {string} counter token name, if the transaction pair is jjcc-swt, the value of counter is "swt"
+   * @param {string} sum the value is the amount multiplied by price
+   * @param {ExchangeType} type the value is "buy" or "sell"
+   * @param {string} platform platform address
+   * @param {string} [issuer="jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"] issuer address of token, the default address is "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
+   * @returns {Promise<string>} resolve hash if create success
+   * @memberof JCCExchange
+   */
+  public static createOrderWithCheck(address: string, secret: string, amount: string, base: string, counter: string, sum: string, type: ExchangeType, platform: string, issuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const chain = chainConfig.getDefaultChain();
+        const tx = serializeCreateOrder(address, amount, base, counter, sum, type, platform, issuer);
+        const inst = exchangeInstance.init(JCCExchange.urls);
+        const copyTx = Object.assign({}, tx);
+        const sequence = await swtcSequence.get(JCCExchange.getSequence, tx.Account);
+        copyTx.Sequence = sequence;
+        const signed = sign(copyTx, secret, chain);
+        const hash = await JCCExchange.submitBlob(signed, inst.createOrder.bind(inst));
+        swtcSequence.rise(address);
+        return resolve(hash);
+      } catch (error) {
+        swtcSequence.reset(address);
+        return reject(error);
+      }
+    });
+  }
+  /**
    * cancel order
    *
    * @static
@@ -187,6 +223,40 @@ class JCCExchange {
         const tx = serializePayment(address, amount, to, token, memo, issuer);
         const inst = exchangeInstance.init(JCCExchange.urls);
         const hash = await JCCExchange.submit(secret, tx, inst.transfer.bind(inst));
+        swtcSequence.rise(address);
+        return resolve(hash);
+      } catch (error) {
+        swtcSequence.reset(address);
+        return reject(error);
+      }
+    });
+  }
+
+  /**
+   * transfer token and check
+   *
+   * @static
+   * @param {string} address address of your jingtum wallet
+   * @param {string} secret secret of your jingtum wallet
+   * @param {string} amount transfer amount
+   * @param {(string | IMemo[])} memo transfer memo
+   * @param {string} to destination address of jingtum wallet
+   * @param {string} token token name of transfer
+   * @param {string} [issuer="jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"] issuer address of token, the default address is "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"
+   * @returns {Promise<string>} resolve hash if transfer success
+   * @memberof JCCExchange
+   */
+  public static transferWithCheck(address: string, secret: string, amount: string, memo: string | IMemo[], to: string, token: string, issuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or"): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const chain = chainConfig.getDefaultChain();
+        const tx = serializePayment(address, amount, to, token, memo, issuer);
+        const inst = exchangeInstance.init(JCCExchange.urls);
+        const copyTx = Object.assign({}, tx);
+        const sequence = await swtcSequence.get(JCCExchange.getSequence, tx.Account);
+        copyTx.Sequence = sequence;
+        const signed = sign(copyTx, secret, chain);
+        const hash = await JCCExchange.submitBlob(signed, inst.createOrder.bind(inst));
         swtcSequence.rise(address);
         return resolve(hash);
       } catch (error) {
@@ -336,6 +406,34 @@ class JCCExchange {
       }
     }
     return hash;
+  }
+
+  protected static async submitBlob(blob: string, callback: (signature: string) => Promise<any>): Promise<string> {
+    let hash: string;
+    let res;
+    let resTx: string = "";
+    let retry = JCCExchange.retry;
+    const inst = exchangeInstance.init(JCCExchange.urls);
+    do {
+      retry--;
+      res = await callback(blob);
+      const engine_result = res.result.engine_result;
+      if (engine_result === "tesSUCCESS") {
+        await delay(5000);
+        hash = res.result.tx_json.hash;
+        resTx = await inst.requestTransaction(hash);
+        if (resTx.length !== 0) break;
+      }
+      if (retry < 0) {
+        throw new Error(res.result.engine_result_message || res.result.error_exception || res.result.error_message);
+      }
+    } while (retry > 0);
+
+    if (resTx.length !== 0) {
+      return hash;
+    } else {
+      throw new Error(res.result.engine_result_message || res.result.error_exception || res.result.error_message);
+    }
   }
 }
 

@@ -62,10 +62,10 @@ describe("test jc exchange", () => {
       expect(JCCExchange.retry).to.equal(2);
       JCCExchange.init(["localhost"], 80, false, 2);
       expect(JCCExchange.urls).to.deep.equal(["http://localhost:80"]);
-      expect(JCCExchange.retry).to.equal(2);
+      expect(JCCExchange.retry).to.equal(1);
       JCCExchange.init(["localhost"], 443, true);
       expect(JCCExchange.urls).to.deep.equal(["https://localhost:443"]);
-      expect(JCCExchange.retry).to.equal(3);
+      expect(JCCExchange.retry).to.equal(1);
       expect(() => JCCExchange.init(["localhost"], 443, true, 4, 5)).throws("arguments does not match");
     });
   });
