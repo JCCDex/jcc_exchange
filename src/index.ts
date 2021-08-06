@@ -296,6 +296,112 @@ class JCCExchange {
   }
 
   /**
+   * add blackList
+   *
+   * @static
+   * @param {string} address manager wallet address
+   * @param {string} secret manager wallet secret
+   * @param {string} account to be frozen wallet address
+   * @param {(string | IMemo[])} memo transfer memo
+   * @returns {Promise<string>} resolve hash if transfer success
+   * @memberof JCCExchange
+   */
+  public static addBlackList(address: string, secret: string, account: string, memo: string | IMemo[]): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const tx = Tx.serializeSetBlackList(address, account, memo);
+        const inst = exchangeInstance.init(JCCExchange.urls);
+        const hash = await JCCExchange.submit(secret, tx, inst.addBlackList.bind(inst));
+        swtcSequence.rise(address);
+        return resolve(hash);
+      } catch (error) {
+        swtcSequence.reset(address);
+        return reject(error);
+      }
+    });
+  }
+
+  /**
+   * remove blackList
+   *
+   * @static
+   * @param {string} address manager wallet address
+   * @param {string} secret manager wallet secret
+   * @param {string} account to be frozen wallet address
+   * @param {(string | IMemo[])} memo transfer memo
+   * @returns {Promise<string>} resolve hash if transfer success
+   * @memberof JCCExchange
+   */
+  public static removeBlackList(address: string, secret: string, account: string, memo: string | IMemo[]): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const tx = Tx.serializeRemoveBlackList(address, account, memo);
+        const inst = exchangeInstance.init(JCCExchange.urls);
+        const hash = await JCCExchange.submit(secret, tx, inst.removeBlackList.bind(inst));
+        swtcSequence.rise(address);
+        return resolve(hash);
+      } catch (error) {
+        swtcSequence.reset(address);
+        return reject(error);
+      }
+    });
+  }
+
+  /**
+   * remove blackList
+   *
+   * @static
+   * @param {string} address manager wallet address
+   * @param {string} secret manager wallet secret
+   * @param {string} account new issuer wallet address
+   * @param {(string | IMemo[])} memo transfer memo
+   * @returns {Promise<string>} resolve hash if transfer success
+   * @memberof JCCExchange
+   */
+  public static setManageIssuer(address: string, secret: string, account: string, memo: string | IMemo[]): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const tx = Tx.serializeManageIssuer(address, account, memo);
+        const inst = exchangeInstance.init(JCCExchange.urls);
+        const hash = await JCCExchange.submit(secret, tx, inst.setManageIssuer.bind(inst));
+        swtcSequence.rise(address);
+        return resolve(hash);
+      } catch (error) {
+        swtcSequence.reset(address);
+        return reject(error);
+      }
+    });
+  }
+
+  /**
+   * issueSet pre issue new token
+   *
+   * @static
+   * @param {string} address manager wallet address
+   * @param {string} secret manager wallet secret
+   * @param {string} amount the max amount with pre issue
+   * @param {(string | IMemo[])} memo transfer memo
+   * @param {string} token token name
+   * @param {string} issuer issuer address of token
+   * @returns {Promise<string>} resolve hash if transfer success
+   * @memberof JCCExchange
+   */
+  public static issueSet(address: string, secret: string, amount: string, memo: string | IMemo[], token: string, issuer): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+      try {
+        const tx = Tx.serializeIssueSet(address, amount, token, memo, issuer);
+        const inst = exchangeInstance.init(JCCExchange.urls);
+        const hash = await JCCExchange.submit(secret, tx, inst.issueSet.bind(inst));
+        swtcSequence.rise(address);
+        return resolve(hash);
+      } catch (error) {
+        swtcSequence.reset(address);
+        return reject(error);
+      }
+    });
+  }
+
+  /**
    * enable/disable multi-sign account, signerQuorum is zero means disable
    *
    * @static

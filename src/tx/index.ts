@@ -202,3 +202,130 @@ export const serializeSetAccount = (account: string, disable: boolean): IAccount
 
   return tx;
 };
+
+export const serializeSetBlackList = (manager: string, account: string, memo: string | IMemo[]): IBlackList => {
+  const { minGas } = chainConfig.getDefaultConfig();
+
+  let memos: IMemo[];
+
+  if (typeof memo === "string") {
+    memos = [
+      {
+        Memo: {
+          MemoData: memo,
+          MemoType: "string"
+        }
+      }
+    ];
+  } else {
+    memos = memo;
+  }
+
+  const tx = {
+    Account: manager,
+    BlackListAccountID: account,
+    Fee: minGas / 1000000,
+    Flags: 0,
+    Memos: memos,
+    TransactionType: "SetBlackList"
+  };
+
+  return tx;
+};
+
+export const serializeRemoveBlackList = (manager: string, account: string, memo: string | IMemo[]): IBlackList => {
+  const { minGas } = chainConfig.getDefaultConfig();
+
+  let memos: IMemo[];
+
+  if (typeof memo === "string") {
+    memos = [
+      {
+        Memo: {
+          MemoData: memo,
+          MemoType: "string"
+        }
+      }
+    ];
+  } else {
+    memos = memo;
+  }
+
+  const tx = {
+    Account: manager,
+    BlackListAccountID: account,
+    Fee: minGas / 1000000,
+    Flags: 0,
+    Memos: memos,
+    TransactionType: "RemoveBlackList"
+  };
+
+  return tx;
+};
+
+export const serializeManageIssuer = (manager: string, account: string, memo: string | IMemo[]): IManageIssuer => {
+  const { minGas } = chainConfig.getDefaultConfig();
+
+  let memos: IMemo[];
+
+  if (typeof memo === "string") {
+    memos = [
+      {
+        Memo: {
+          MemoData: memo,
+          MemoType: "string"
+        }
+      }
+    ];
+  } else {
+    memos = memo;
+  }
+
+  const tx = {
+    Account: manager,
+    IssuerAccountID: account,
+    Fee: minGas / 1000000,
+    Flags: 0,
+    Memos: memos,
+    TransactionType: "ManageIssuer"
+  };
+
+  return tx;
+};
+
+export const serializeIssueSet = (manager: string, amount: string, token: string, memo: string | IMemo[], issuer: string): IIssueSet => {
+  let _amount: IAmount | string;
+  const { minGas } = chainConfig.getDefaultConfig();
+
+  let memos: IMemo[];
+
+  _amount = {
+    currency: token.toUpperCase(),
+    issuer,
+    value: amount
+  };
+
+  if (typeof memo === "string") {
+    memos = [
+      {
+        Memo: {
+          MemoData: memo,
+          MemoType: "string"
+        }
+      }
+    ];
+  } else {
+    memos = memo;
+  }
+
+  const tx = {
+    Account: manager,
+    TotalAmount: _amount,
+    Fee: minGas / 1000000,
+    Flags: 0,
+    Memos: memos,
+    TransactionType: "IssueSet"
+  };
+
+  return tx;
+};

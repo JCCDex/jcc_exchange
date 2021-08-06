@@ -103,3 +103,33 @@ declare interface IToken {
   name: string;
   issuer: string;
 }
+
+declare interface IBlackList {
+  Account: string;
+  Fee: number;
+  Flags: number;
+  Sequence?: number;
+  BlackListAccountID?: string;
+  TransactionType: string;
+  Memos: IMemo[];
+}
+
+declare interface IIssueSet {
+  Account: string;
+  Fee: number;
+  Flags: number;
+  Sequence?: number;
+  TransactionType: string;
+  TotalAmount: string | IAmount;
+  Memos: IMemo[];
+}
+
+declare interface IManageIssuer {
+  Account: string;
+  Fee: number;
+  Flags: number;
+  Sequence?: number;
+  IssuerAccountID: string;
+  TransactionType: string;
+  Memos: IMemo[];
+}
