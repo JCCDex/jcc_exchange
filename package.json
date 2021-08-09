@@ -8,9 +8,9 @@
     "lib"
   ],
   "dependencies": {
-    "@swtc/common": "^1.0.11",
-    "@swtc/serializer": "^1.0.9",
-    "@swtc/wallet": "^1.0.11",
+    "@swtc/common": "^1.0.20",
+    "@swtc/serializer": "^1.0.14",
+    "@swtc/wallet": "^1.0.17",
     "@types/node": "^13.7.7",
     "jcc_rpc": "^0.3.1"
   },
