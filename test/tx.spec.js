@@ -6,9 +6,9 @@ const testAddress = "jpgWGpfHz8GxqUjz5nb6ej8eZJQtiF6KhH";
 const testSecret = "snfXQMEVbbZng84CcfdKDASFRi4Hf";
 const issuer = "jGa9J9TkqtBcUoHe2zqhVFFbgUVED6o9or";
 
-describe("test tx", function() {
-  describe("test serializeCreateOrder", function() {
-    it("use cny to buy swt", function() {
+describe("test tx", function () {
+  describe("test serializeCreateOrder", function () {
+    it("use cny to buy swt", function () {
       const tx = serializeCreateOrder(testAddress, "1", "swt", "cny", "0.03", "buy", undefined, issuer);
       expect(tx).to.deep.equal({
         Flags: 0,
@@ -29,7 +29,7 @@ describe("test tx", function() {
       );
     });
 
-    it("use swt to buy jjcc", function() {
+    it("use swt to buy jjcc", function () {
       const tx = serializeCreateOrder(testAddress, "1", "jjcc", "swt", "0.5", "buy", testAddress);
       expect(tx).to.deep.equal({
         Flags: 0,
@@ -46,7 +46,7 @@ describe("test tx", function() {
       });
     });
 
-    it("sell swt to get cny", function() {
+    it("sell swt to get cny", function () {
       const tx = serializeCreateOrder(testAddress, "1", "swt", "cny", "0.03", "sell", null, issuer);
       expect(tx).to.deep.equal({
         Flags: 524288,
@@ -63,7 +63,7 @@ describe("test tx", function() {
       });
     });
 
-    it("sell jjcc to get swt", function() {
+    it("sell jjcc to get swt", function () {
       const tx = serializeCreateOrder(testAddress, "1", "jjcc", "swt", "0.4", "sell");
       expect(tx).to.deep.equal({
         Flags: 524288,
@@ -80,13 +80,13 @@ describe("test tx", function() {
       });
     });
 
-    it("if the type is not sell and buy", function() {
+    it("if the type is not sell and buy", function () {
       expect(() => serializeCreateOrder(testAddress, "1", "jjcc", "swt", "0.4", "")).to.throw("The type of creating order should be one of 'buy' and 'sell'");
     });
   });
 
-  describe("test serializeCancelOrder", function() {
-    it("format correctly", function() {
+  describe("test serializeCancelOrder", function () {
+    it("format correctly", function () {
       let tx = serializeCancelOrder(testAddress, 1);
       expect(tx).to.deep.equal({
         Flags: 0,
@@ -98,8 +98,8 @@ describe("test tx", function() {
     });
   });
 
-  describe("test serializePayment", function() {
-    it("transfer swt", function() {
+  describe("test serializePayment", function () {
+    it("transfer swt", function () {
       const tx = serializePayment(testAddress, "1", "123456", "swt", "test", issuer);
       expect(tx).to.deep.equal({
         Flags: 0,
@@ -119,7 +119,7 @@ describe("test tx", function() {
       });
     });
 
-    it("transfer cny", function() {
+    it("transfer cny", function () {
       const tx = serializePayment(testAddress, "1", "123456", "cny", [
         {
           Memo: {
@@ -151,8 +151,8 @@ describe("test tx", function() {
     });
   });
 
-  describe("test serializeBrokerage", function() {
-    it("format correctly", function() {
+  describe("test serializeBrokerage", function () {
+    it("format correctly", function () {
       let tx = serializeBrokerage(testAddress, testAddress, 1, 1000, "xxx");
       expect(tx).to.deep.equal({
         Account: testAddress,
