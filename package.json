@@ -12,9 +12,9 @@
   },
   "dependencies": {
     "@swtc/common": "^1.2.0",
-    "@swtc/serializer": "^1.2.0",
+    "@swtc/serializer": "^1.0.4",
     "@swtc/wallet": "^1.2.0",
-    "jcc_rpc": "^0.3.2"
+    "jcc_rpc": "^0.3.3"
   },
   "devDependencies": {
     "@types/node": "^22.10.7",
@@ -74,6 +74,8 @@
   "homepage": "https://github.com/JCCDex/jcc_exchange#readme",
   "overrides": {
     "axios": "^1.7.9",
-    "serialize-javascript": "^7.0.5"
+    "serialize-javascript": "^7.0.5",
+    "tar": "^7.4.3",
+    "elliptic": "^6.6.1"
   }
 }
